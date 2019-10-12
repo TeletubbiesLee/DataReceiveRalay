@@ -13,6 +13,9 @@
 #include "sys.h"
 #include "CC1101.h"
 
+uint8_t g_RSSI_Value = 0;       //RSSI寄存器的值
+uint8_t g_LQI_Value = 0;        //LQI寄存器的值
+
 
 //99.9756kBand
 const RF_SETTINGS rfSettings = 
@@ -213,6 +216,8 @@ uint8_t CC1101_ReceivePacket(uint8_t* rxBuffer, uint8_t* length)
         
             // Read the 2 appended status bytes (status[0] = RSSI, status[1] = LQI)
             SPI_ReadBrustReg(CCxxx0_RXFIFO, status, 2); 	//读出CRC校验位
+            g_RSSI_Value = status[0];       //保存RSSI寄存器的值
+            g_LQI_Value = status[1];        //保存LQI寄存器的值
 						SPI_Strobe(CCxxx0_SFRX);		//清洗接收缓冲区
             return (status[1] & CRC_OK);			//如果校验成功则返回接收成功
          }
