@@ -17,6 +17,6 @@
 extern uint32_t g_ModbusBandrate;
 extern uint8_t g_ModbusParity;
 
-int   TaskModbusInit(void);
+int TaskModbusInit(void);
 
 #endif

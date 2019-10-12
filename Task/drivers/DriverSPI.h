@@ -1,6 +1,6 @@
 #ifndef __DRIVER_SPI_H
 #define __DRIVER_SPI_H
-#include "sys.h"
+#include "stm32f4xx_hal.h"
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //ALIENTEK STM32F429开发板
@@ -17,6 +17,6 @@
 extern SPI_HandleTypeDef SPI2_Handler;  //SPI句柄
 
 void SPI2_Init(void);
-void SPI2_SetSpeed(u8 SPI_BaudRatePrescaler);
-u8 SPI2_ReadWriteByte(u8 TxData);
+void SPI2_SetSpeed(uint8_t SPI_BaudRatePrescaler);
+uint8_t SPI2_ReadWriteByte(uint8_t TxData);
 #endif

@@ -11,11 +11,6 @@
 #ifndef __DATA_FRAME_H_
 #define __DATA_FRAME_H_
 
-#include "stdint.h"
 
-
-extern uint16_t g_TemperatureAndVoltage[128];
-
-void WriteDataBuf(uint16_t* data, uint16_t* dataBuffer, uint8_t dataLenth);
 
 #endif

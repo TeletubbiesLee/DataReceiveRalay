@@ -39,35 +39,11 @@ void SPI2_Init(void)
     SPI2_ReadWriteByte(0Xff);                           //启动传输
 }
 
-//SPI2底层驱动，时钟使能，引脚配置
-//此函数会被HAL_SPI_Init()调用
-//hspi:SPI句柄
-void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
-{
-    GPIO_InitTypeDef GPIO_Initure;
-    
-    __HAL_RCC_GPIOB_CLK_ENABLE();       //使能GPIOB时钟
-	__HAL_RCC_SPI2_CLK_ENABLE();        //使能SPI2时钟
-    
-    //PB13,14,15
-    GPIO_Initure.Pin=GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
-    GPIO_Initure.Mode=GPIO_MODE_AF_PP;              //复用推挽输出
-    GPIO_Initure.Pull=GPIO_PULLUP;                  //上拉
-    GPIO_Initure.Speed=GPIO_SPEED_HIGH;             //快速            
-    GPIO_Initure.Alternate=GPIO_AF5_SPI2;           //复用为SPI2
-    HAL_GPIO_Init(GPIOB,&GPIO_Initure);
-	
-//	GPIO_Initure.Pin=GPIO_PIN_6;
-//  GPIO_Initure.Mode=GPIO_MODE_INPUT;              //输入
-//	HAL_GPIO_Init(GPIOA,&GPIO_Initure);
-	
-}
-
 //SPI速度设置函数
 //SPI速度=fAPB1/分频系数
 //@ref SPI_BaudRate_Prescaler:SPI_BAUDRATEPRESCALER_2~SPI_BAUDRATEPRESCALER_2 256
 //fAPB1时钟一般为45Mhz：
-void SPI2_SetSpeed(u8 SPI_BaudRatePrescaler)
+void SPI2_SetSpeed(uint8_t SPI_BaudRatePrescaler)
 {
     assert_param(IS_SPI_BAUDRATE_PRESCALER(SPI_BaudRatePrescaler));//判断有效性
     __HAL_SPI_DISABLE(&SPI2_Handler);            //关闭SPI
@@ -80,9 +56,9 @@ void SPI2_SetSpeed(u8 SPI_BaudRatePrescaler)
 //SPI2 读写一个字节
 //TxData:要写入的字节
 //返回值:读取到的字节
-u8 SPI2_ReadWriteByte(u8 TxData)
+uint8_t SPI2_ReadWriteByte(uint8_t TxData)
 {
-    u8 Rxdata;
+    uint8_t Rxdata;
     HAL_SPI_TransmitReceive(&SPI2_Handler,&TxData,&Rxdata,1, 1000);       
  	return Rxdata;          		    //返回收到的数据		
 }

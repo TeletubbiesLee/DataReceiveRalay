@@ -1,14 +1,23 @@
-
+/**
+  *             Copyright (C) SOJO Electric CO., Ltd. 2019-2020. All right reserved.
+  * @file:      CC1101.c
+  * @brief:     CC1101无线传输模块驱动文件
+  * @version:   V1.0.0 
+  * @author:    Lei
+  * @date:      2019-10-11
+  * @update:    [2019-10-11][Lei][creat]
+  */
+  
 #ifndef __CC1101_H_
 #define __CC1101_H_
 
 #include <stdint.h>
 
-#define 	WRITE_BURST     	0x40						//????
-#define 	READ_SINGLE     	0x80						//?
-#define 	READ_BURST      	0xC0						//???
-#define 	BYTES_IN_RXFIFO     0x7F  						//???????????
-#define 	CRC_OK              0x80 						//CRC???????
+#define 	WRITE_BURST     	0x40
+#define 	READ_SINGLE     	0x80
+#define 	READ_BURST      	0xC0
+#define 	BYTES_IN_RXFIFO     0x7F
+#define 	CRC_OK              0x80
 
 #define MISO		HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_14)
 #define CSn			PBout(12)

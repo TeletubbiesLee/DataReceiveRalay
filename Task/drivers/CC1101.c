@@ -1,8 +1,17 @@
+/**
+  *             Copyright (C) SOJO Electric CO., Ltd. 2019-2020. All right reserved.
+  * @file:      CC1101.c
+  * @brief:     CC1101无线传输模块驱动文件
+  * @version:   V1.0.0 
+  * @author:    Lei
+  * @date:      2019-10-11
+  * @update:    [2019-10-11][Lei][creat]
+  */
+
+
 #include "DriverSPI.h"
-#include "delay.h"
+#include "sys.h"
 #include "CC1101.h"
-
-
 
 
 //99.9756kBand
@@ -47,52 +56,6 @@ const RF_SETTINGS rfSettings =
     0x00,   // ADDR      Device address.
     0x50    // PKTLEN    Packet length.
 };
-
-
-/*
-//1200
-const RF_SETTINGS rfSettings = 
-{
-	0x00,
-    0x08,   // FSCTRL1   Frequency synthesizer control.
-    0x00,   // FSCTRL0   Frequency synthesizer control.
-    0x10,   // FREQ2     Frequency control word, high byte.
-    0xA7,   // FREQ1     Frequency control word, middle byte.
-    0x62,   // FREQ0     Frequency control word, low byte.
-    0x55,   // MDMCFG4   Modem configuration.
-    0x83,   // MDMCFG3   Modem configuration.
-    0x03,   // MDMCFG2   Modem configuration.
-    0x22,   // MDMCFG1   Modem configuration.
-    0xF8,   // MDMCFG0   Modem configuration.
-
-    0x01,   // CHANNR    Channel number.
-    0x47,   // DEVIATN   Modem deviation setting (when FSK modulation is enabled).
-    0xB6,   // FREND1    Front end RX configuration.
-    0x10,   // FREND0    Front end RX configuration.
-    0x18,   // MCSM0     Main Radio Control State Machine configuration.
-    0x1D,   // FOCCFG    Frequency Offset Compensation Configuration.
-    0x1C,   // BSCFG     Bit synchronization Configuration.
-    0xC7,   // AGCCTRL2  AGC control.
-    0x00,   // AGCCTRL1  AGC control.
-    0xB2,   // AGCCTRL0  AGC control.
-
-    0xE9,   // FSCAL3    Frequency synthesizer calibration.
-    0x2A,   // FSCAL2    Frequency synthesizer calibration.
-    0x00,   // FSCAL1    Frequency synthesizer calibration.
-    0x1F,   // FSCAL0    Frequency synthesizer calibration.
-    0x59,   // FSTEST    Frequency synthesizer calibration.
-    0x88,   // TEST2     Various test settings.
-    0x31,   // TEST1     Various test settings.
-    0x09,   // TEST0     Various test settings.
-    0x0B,   // IOCFG2    GDO2 output pin configuration.
-    0x06,   // IOCFG0   GDO0 output pin configuration. Refer to SmartRF?Studio User Manual for detailed pseudo register explanation.
-
-    0x04,   // PKTCTRL1  Packet automation control.
-    0x05,   // PKTCTRL0  Packet automation control.
-    0x00,   // ADDR      Device address.
-    0x0C    // PKTLEN    Packet length.
-};
-*/
 
 
 static void CC1101_IO_Init(void);
