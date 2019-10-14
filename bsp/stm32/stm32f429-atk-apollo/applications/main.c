@@ -2,7 +2,7 @@
  * Copyright (c) 2006-2018, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
- *
+ * 分布式开发板
  * Change Logs:
  * Date           Author       Notes
  * 2018-11-06     SummerGift   first version
@@ -16,7 +16,7 @@
 #include "TaskDataReceive.h"
 
 
-/* defined the LED0 pin: PB1 */
+/* defined the LED0 pin: PB0 */
 #define LED0_PIN    GET_PIN(B, 0)
 
 int main(void)
