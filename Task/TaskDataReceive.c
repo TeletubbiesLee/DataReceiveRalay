@@ -32,6 +32,8 @@ extern uint8_t g_LQI_Value;
      
  int8_t  CalculateRSSI(uint8_t RSSI_dec);
  double  CalculateTemperature(uint8_t temperatureTmpH,uint8_t temperatureTmpL);
+ double  CalculateVolatge(uint8_t voltageTmpH,uint8_t voltageTmpL);
+ uint16_t TX_Checksum(uint8_t *dataBuf, uint8_t len);
 
 /*************************************function******************************************/
 /**
@@ -42,15 +44,16 @@ extern uint8_t g_LQI_Value;
   */
 static void TaskDataReceiveThreadEntry(void* parameter)
 {
-    int8_t absolutePower = 0;
-	
+    int8_t absolutePower = 0;	
 	uint8_t rxBuffer[10] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
     uint8_t leng = 0;
     uint8_t num = 0;
     uint8_t LQI_RealValue = 0;
     double  temperature = 0;
-    
+    double  volatgeDouble = 0;
+    uint16_t checksumValue = 0;
+    uint8_t    checksumValueHigh = 0;
+    uint8_t    checksumValueLow = 0;
     CC1101_PowerUp();
 	CC1101_SettingsReg();
     while(1)
@@ -64,18 +67,33 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 			rt_kprintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X,\r\n", 	
             rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3], rxBuffer[4], rxBuffer[5], rxBuffer[6], rxBuffer[7] ,rxBuffer[8],rxBuffer[9]);
 			rt_thread_mdelay(10);
-            temperature =  CalculateTemperature(rxBuffer[2],rxBuffer[2]);
-            rt_kprintf("温度传感器温度值为：%f °C\r\n", temperature );              
+            checksumValue = TX_Checksum (rxBuffer,8) ;
+            checksumValueHigh = checksumValue>>8;
+            checksumValueLow  = (checksumValue << 8) >> 8;
+            if(rxBuffer[0] == 0x55 && rxBuffer[8]==checksumValueHigh&&rxBuffer[9] ==checksumValueLow)
+            {
+            //计算温度传感器温度值
+            temperature =  CalculateTemperature(rxBuffer[4],rxBuffer[5]);
+            rt_kprintf("温度传感器温度值为：%f °C\r\n", temperature );    
+            //计算电源的电压值
+            volatgeDouble =  CalculateVolatge(rxBuffer[6],rxBuffer[7]);
+            rt_kprintf("测得电压数据为：%f mV\r\n", volatgeDouble ); 
+                
             rt_kprintf("CC1101的RSSI为：0x%X 与 LQI 为 0x%X： \r\n", g_RSSI_Value, g_LQI_Value);
             absolutePower = CalculateRSSI(g_RSSI_Value);
-            printf("CC1101的绝对功率为：%d dBm \r\n", absolutePower);
+            rt_kprintf("CC1101的绝对功率为：%d dBm \r\n", absolutePower);
             //LQI_RealValue = g_LQI_Value&0x7F;
             LQI_RealValue = g_LQI_Value&(~(1<<7));
             rt_kprintf("CC1101的LQI为：%d \r\n", LQI_RealValue);            
 			memset(rxBuffer, 0, leng);			
 			CC1101_Reset();
 			CC1101_SettingsReg();
-            num = 0;
+            num = 0;           
+            }
+            else
+            {
+                rt_kprintf("数据校验错误" ); 
+            }
 		}
         if(num == 20)
         {
@@ -101,7 +119,7 @@ double  CalculateTemperature(uint8_t temperatureTmpH,uint8_t temperatureTmpL)
     double  temperature = 0;
     temperatureInt = (temperatureTmpH<<8 )+ temperatureTmpL;
     temperatureDouble = temperatureInt * (2500.0/1023); 
-    rt_kprintf("温度传感器电压输入数据为：%f mV\r\n", temperatureDouble );            
+   // rt_kprintf("温度传感器电压输入数据为：%f mV\r\n", temperatureDouble );            
     temperature = (5.506 - sqrt( pow(-5.506,2) + 4 * 0.00176 * (870.6 - temperatureDouble))) /( 2 * (-0.00176)) + 30;           
     return temperature;
 }
@@ -119,7 +137,7 @@ double  CalculateVolatge(uint8_t voltageTmpH,uint8_t voltageTmpL)
    double  voltageDouble = 0;
    voltageInt = (voltageTmpH<<8 )+ voltageTmpL;
    voltageDouble = voltageInt * (2500.0/1023) * 2; //因为外部电路，所以需要乘以2 
-   rt_kprintf("测得电压数据为：%f mV\r\n", voltageDouble );
+  // rt_kprintf("测得电压数据为：%f mV\r\n", voltageDouble );
    return voltageDouble;
 }
 
@@ -167,6 +185,21 @@ int TaskDataReceiveInit(void)
 				   
     return 0;    
              
+}
+
+
+
+
+uint16_t TX_Checksum(uint8_t *dataBuf, uint8_t len)
+{
+    uint8_t i;
+    uint16_t ret = 0;
+    
+    for(i=0;i<len; i++)
+    {
+      ret +=*(dataBuf++);
+    }
+    return ret;
 }
 
 
