@@ -44,18 +44,21 @@ extern uint8_t g_LQI_Value;
   */
 static void TaskDataReceiveThreadEntry(void* parameter)
 {
-    int8_t absolutePower = 0;	
+    /*num用于计时1s 将CC1101复位*/
+    uint8_t num = 0;
+    /*数据帧的数据以及长度*/	
 	uint8_t rxBuffer[10] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
     uint8_t leng = 0;
-    uint8_t num = 0;
+    /*绝对功率和LQI值*/
+    int8_t absolutePower = 0;
     uint8_t LQI_RealValue = 0;
+    /*温度值的浮点类型和字符串类型*/
     double  temperature = 0;
-    double  voltageDouble = 0;
-    uint16_t checksumValue = 0;
-    uint8_t    checksumValueHigh = 0;
-    uint8_t    checksumValueLow = 0;
+    double  voltageDouble = 0;    
     char temperatureString[10] = "";
     char voltageString[10] = "";
+    /*校验和的值*/
+    uint16_t checksumValue = 0;
     CC1101_PowerUp();
 	CC1101_SettingsReg();
     while(1)
@@ -64,32 +67,34 @@ static void TaskDataReceiveThreadEntry(void* parameter)
        num++;
 		if(CC1101_ReceivePacket(rxBuffer, &leng))
 		{
-		
-			//HAL_UART_Transmit(&UART1_Handler,(uint8_t*)rxBuffer, leng ,100);
+            
 			rt_kprintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X,\r\n", 	
             rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3], rxBuffer[4], rxBuffer[5], rxBuffer[6], rxBuffer[7] ,rxBuffer[8],rxBuffer[9]);
 			rt_thread_mdelay(10);
+            
             checksumValue = RX_Checksum (rxBuffer,8) ;
-            checksumValueHigh = checksumValue>>8;
-            checksumValueLow  = (checksumValue << 8) >> 8;
-            if(rxBuffer[0] == 0x55 && rxBuffer[8]==checksumValueHigh&&rxBuffer[9] ==checksumValueLow)
+            if(rxBuffer[0] == 0x55 && rxBuffer[8]==(checksumValue & 0xFF00) >> 8 &&rxBuffer[9] ==(checksumValue & 0x00FF))
             {
-            //计算温度传感器温度值
+                
+            /*计算温度传感器温度值*/
             temperature =  CalculateTemperature(rxBuffer[4],rxBuffer[5]);               
-            sprintf(temperatureString, "%f", temperature);  
-            rt_kprintf("温度传感器温度值为：%s °C\r\n", temperatureString );    
-            //计算电源的电压值
+            sprintf(temperatureString, "%.1f", temperature);  
+            rt_kprintf("温度传感器温度值为：%s °C\r\n", temperatureString );   
+                
+            /*计算电源的电压值*/
             voltageDouble =  CalculateVolatge(rxBuffer[6],rxBuffer[7]);
-            sprintf(voltageString, "%f", voltageDouble); 
+            sprintf(voltageString, "%.1f", voltageDouble); 
             rt_kprintf("测得电压数据为：%s mV\r\n", voltageString ); 
-            //计算信号强度    
+                
+            /*计算信号强度*/    
             rt_kprintf("CC1101的RSSI为：0x%X 与 LQI 为 0x%X： \r\n", g_RSSI_Value, g_LQI_Value);
             absolutePower = CalculateRSSI(g_RSSI_Value);
             rt_kprintf("CC1101的绝对功率为：%d dBm \r\n", absolutePower);
             //LQI_RealValue = g_LQI_Value&0x7F;
             LQI_RealValue = g_LQI_Value&(~(1<<7));
             rt_kprintf("CC1101的LQI为：%d \r\n", LQI_RealValue);            
-			memset(rxBuffer, 0, leng);			
+			memset(rxBuffer, 0, leng);	
+                
 			CC1101_Reset();
 			CC1101_SettingsReg();
             num = 0;           
@@ -121,6 +126,7 @@ double  CalculateTemperature(uint8_t temperatureTmpH,uint8_t temperatureTmpL)
     uint16_t temperatureInt =0;
     double  temperatureDouble = 0;
     double  temperature = 0;
+    
     temperatureInt = (temperatureTmpH<<8 )+ temperatureTmpL;
     temperatureDouble = temperatureInt * (2500.0/1023); 
    // rt_kprintf("温度传感器电压输入数据为：%f mV\r\n", temperatureDouble );            
@@ -139,6 +145,7 @@ double  CalculateVolatge(uint8_t voltageTmpH,uint8_t voltageTmpL)
 {
    uint16_t voltageInt = 0; 
    double  voltageDouble = 0;
+    
    voltageInt = (voltageTmpH<<8 )+ voltageTmpL;
    voltageDouble = voltageInt * (2500.0/1023) * 2; //因为外部电路，所以需要乘以2 
   // rt_kprintf("测得电压数据为：%f mV\r\n", voltageDouble );
@@ -151,7 +158,6 @@ double  CalculateVolatge(uint8_t voltageTmpH,uint8_t voltageTmpL)
   * @return: temp 
   * @updata: [2019-10-12][Gang][creat]
   */
-
 int8_t CalculateRSSI(uint8_t RSSI_dec)
 {
     int8_t temp = 0;
