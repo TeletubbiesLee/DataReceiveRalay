@@ -22,7 +22,7 @@
 /*************************************static********************************************/
 /* CC1101无线数据接收的任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_TASK_DATA_RECEIVE_PRIO	11
-static rt_uint8_t TaskDataReceiveStack[512];
+static rt_uint8_t TaskDataReceiveStack[1024];
 struct rt_thread ThreadTaskDataReceive;
 static void TaskDataReceiveThreadEntry(void* parameter);
 
@@ -46,19 +46,27 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 {
     /*num用于计时1s 将CC1101复位*/
     uint8_t num = 0;
+    
     /*数据帧的数据以及长度*/	
-	uint8_t rxBuffer[10] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+	uint8_t rxBuffer[12] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
     uint8_t leng = 0;
+    
     /*绝对功率和LQI值*/
     int8_t absolutePower = 0;
     uint8_t LQI_RealValue = 0;
+    
     /*温度值的浮点类型和字符串类型*/
     double  temperature = 0;
     double  voltageDouble = 0;    
     char temperatureString[10] = "";
     char voltageString[10] = "";
+    
     /*校验和的值*/
     uint16_t checksumValue = 0;
+    
+    /*无线发射器唯一编码*/
+    uint32_t wirelessID = 0;
+    
     CC1101_PowerUp();
 	CC1101_SettingsReg();
     while(1)
@@ -68,31 +76,35 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 		if(CC1101_ReceivePacket(rxBuffer, &leng))
 		{
             
-			rt_kprintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X,\r\n", 	
-            rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3], rxBuffer[4], rxBuffer[5], rxBuffer[6], rxBuffer[7] ,rxBuffer[8],rxBuffer[9]);
+			rt_kprintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X\r\n", 	
+            rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3], rxBuffer[4], rxBuffer[5], rxBuffer[6], rxBuffer[7] , rxBuffer[8], rxBuffer[9], rxBuffer[10], rxBuffer[11]);
 			rt_thread_mdelay(10);
             
-            checksumValue = RX_Checksum (rxBuffer,8) ;
-            if(rxBuffer[0] == 0x55 && rxBuffer[8]==(checksumValue & 0xFF00) >> 8 &&rxBuffer[9] ==(checksumValue & 0x00FF))
+            checksumValue = RX_Checksum (rxBuffer,10) ;
+            if(rxBuffer[0] == 0x55 && rxBuffer[10]==(checksumValue & 0xFF00) >> 8 &&rxBuffer[11] ==(checksumValue & 0x00FF))
             {
                 
             /*计算温度传感器温度值*/
-            temperature =  CalculateTemperature(rxBuffer[4],rxBuffer[5]);               
+            temperature =  CalculateTemperature(rxBuffer[6],rxBuffer[7]);               
             sprintf(temperatureString, "%.1f", temperature);  
-            rt_kprintf("温度传感器温度值为：%s °C\r\n", temperatureString );   
+            rt_kprintf("温度传感器温度值为：%s℃\r\n", temperatureString );   
                 
             /*计算电源的电压值*/
-            voltageDouble =  CalculateVolatge(rxBuffer[6],rxBuffer[7]);
+            voltageDouble =  CalculateVolatge(rxBuffer[8],rxBuffer[9]);
             sprintf(voltageString, "%.1f", voltageDouble); 
-            rt_kprintf("测得电压数据为：%s mV\r\n", voltageString ); 
+            rt_kprintf("测得电压数据为：%smV\r\n", voltageString ); 
                 
             /*计算信号强度*/    
             rt_kprintf("CC1101的RSSI为：0x%X 与 LQI 为 0x%X： \r\n", g_RSSI_Value, g_LQI_Value);
             absolutePower = CalculateRSSI(g_RSSI_Value);
-            rt_kprintf("CC1101的绝对功率为：%d dBm \r\n", absolutePower);
+            rt_kprintf("CC1101的绝对功率为：%ddBm \r\n", absolutePower);
             //LQI_RealValue = g_LQI_Value&0x7F;
             LQI_RealValue = g_LQI_Value&(~(1<<7));
-            rt_kprintf("CC1101的LQI为：%d \r\n", LQI_RealValue);            
+            rt_kprintf("CC1101的LQI为：%d \r\n", LQI_RealValue); 
+            /*显示无线发送器唯一编码*/
+            wirelessID =(rxBuffer[2] << 24) + (rxBuffer[3] << 16) + (rxBuffer[4] << 8) + rxBuffer[5];
+            rt_kprintf("无线发送器唯一编码为：%d \r\n", wirelessID);
+
 			memset(rxBuffer, 0, leng);	
                 
 			CC1101_Reset();

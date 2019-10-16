@@ -11,6 +11,10 @@
 #ifndef __DATA_FRAME_H_
 #define __DATA_FRAME_H_
 
+#include <stdint.h>
+uint32_t BandrateConfig(uint16_t configRegister);
+uint16_t TemperatureDataStorage (double temperature, uint16_t configRegister);
+
 
 
 #endif
