@@ -1,6 +1,11 @@
 {
     "editor.tabCompletion": "on",
     "editor.detectIndentation": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "files.associations": {
+        "communicationconfig.h": "c",
+        "stdint.h": "c",
+        "taskmodbus.h": "c"
+    }
     
 }

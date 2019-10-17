@@ -789,6 +789,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\TaskDataReceive.c</FilePath>
             </File>
+            <File>
+              <FileName>CommunicationConfig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\CommunicationConfig.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

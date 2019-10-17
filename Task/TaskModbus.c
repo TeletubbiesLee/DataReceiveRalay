@@ -7,22 +7,14 @@
   * @date:      2019-06-19
   * @update:    [2019-06-19][Lei][creat]
 				[2019-09-11][Gang][update][增加Mdobus从机修改数据的任务]
+				[2019-10-17][Lei][update][删除Mdobus从机修改数据的任务]
   */
 
 /********************************include**************************************/
-#include "TaskModbus.h"
-#include "DataFrame.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <rthw.h>
 #include <rtthread.h>
 #include "user_mb_app.h"
-#include "mbfunc.h"
-#include "mbrtu.h"
-
-/*************************************global********************************************/
-uint32_t g_ModbusBandrate = 115200;		//Modbus的波特率
-uint8_t  g_ModbusParity = MB_PAR_NONE;	//Modbus的奇偶校验方式，无奇偶校验位
+#include "CommunicationConfig.h"
+#include "TaskModbus.h"
 
 
 
@@ -53,7 +45,7 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
 	/* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
-	eMBInit(MB_RTU, 0x01, 1, g_ModbusBandrate,  g_ModbusParity);
+	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  g_ModbusParity);
 		
 	eMBEnable();			//启动FreeModbus
 	
@@ -61,6 +53,7 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 	{
 		eMBPoll();		//FreeModbus从机不断查询
 	}
+
 }
 
 

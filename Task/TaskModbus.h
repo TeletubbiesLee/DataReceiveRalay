@@ -8,14 +8,9 @@
   * @update:    [2019-06-19][Lei][creat]
   */
 
-
 #ifndef __TASK_MODBUS_H_
 #define __TASK_MODBUS_H_
 
-#include <stdint.h>
-
-extern uint32_t g_ModbusBandrate;
-extern uint8_t g_ModbusParity;
 
 int TaskModbusInit(void);
 
