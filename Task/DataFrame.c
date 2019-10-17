@@ -17,6 +17,11 @@
 static uint8_t GetDeviceNumber(struct NodeData* nodeData);
 static void SaveTemperature(struct NodeData nodeData);
 static void SaveVoltage(struct NodeData nodeData);
+static uint8_t CheckSum(uint8_t* data, uint8_t lenth);
+static uint32_t CalculateDeviceId(uint8_t* data, uint8_t lenth);
+static float CalculateVolatge(uint8_t* data, uint8_t lenth);
+static float CalculateTemperature(uint8_t* data, uint8_t lenth);
+
 
 
 
@@ -45,7 +50,27 @@ void NodeDataStructInit(NodeDataStruct* nodeData)
   */
 uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
 {
-
+	uint8_t ret = 0;
+	if(0x5A == sourceData[0])				//判断数据帧头
+	{
+		if(0 == CheckSum(sourceData, 12))		//判断累加校验和
+		{
+			nodeData->deviceId = CalculateDeviceId(&sourceData[2], 4);
+			nodeData->temperatureValue = CalculateTemperature(&sourceData[6], 2);
+			nodeData->voltageValue = CalculateVolatge(&sourceData[8], 2);
+		}
+		else
+		{
+			ret = 1;
+		}
+		
+	}
+	else
+	{
+		ret = 2;
+	}
+	
+	return ret;
 }
 
 
@@ -83,6 +108,59 @@ static void SaveVoltage(struct NodeData nodeData)
 {
 
 }
+
+
+/**
+  * @brief : 累加校验和计算
+  * @param : data 要计算的数据
+  * @param : lenth 数据的总长度
+  * @return: 0:校验正确; 1:校验不正确
+  * @updata: [2019-10-17][Lei][creat]
+  */
+static uint8_t CheckSum(uint8_t* data, uint8_t lenth)
+{
+
+}
+
+
+/**
+  * @brief : 计算设备唯一ID号
+  * @param : data ID号原始值
+  * @param : lenth 原始数据的长度
+  * @return: 得出的ID号
+  * @updata: [2019-10-17][Lei][creat]
+  */
+static uint32_t CalculateDeviceId(uint8_t* data, uint8_t lenth)
+{
+
+}
+
+
+/**
+  * @brief : 计算电压值
+  * @param : data 电压原始值
+  * @param : lenth 电压数据的长度
+  * @return: 计算出的电压值
+  * @updata: [2019-10-17][Lei][creat]
+  */
+static float CalculateVolatge(uint8_t* data, uint8_t lenth)
+{
+
+}
+
+
+/**
+  * @brief : 计算温度值
+  * @param : data 温度原始值
+  * @param : lenth 温度数据的长度
+  * @return: 计算出的温度值
+  * @updata: [2019-10-17][Lei][creat]
+  */
+static float CalculateTemperature(uint8_t* data, uint8_t lenth)
+{
+
+}
+
 
 
 
