@@ -14,19 +14,18 @@
 
 #define DEBUG_PRINTF        //开启串口调试
 
- /**
-  * @brief 调试打印的函数定义
-  */
- #ifdef DEBUG_PRINTF
-
- //开启调试模式
- #define debugPrintf(format,...)    rt_kprintf(format, ##__VA_ARGS__)
+    /**
+      * @brief 调试打印的函数定义
+      */
+    #ifdef DEBUG_PRINTF
+    //开启调试模式
+    #define DebugPrintf(format,...)    rt_kprintf(format, ##__VA_ARGS__)
  
- #else
+    #else
  
- //关闭调试模式
- #define debugPrintf(format,...)
+    //关闭调试模式
+    #define DebugPrintf(format,...)
 
- #endif
+    #endif
 
 #endif

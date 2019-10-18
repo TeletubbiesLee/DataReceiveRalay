@@ -51,13 +51,13 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 
 	NodeDataStructInit(&nodeData);		//初始化节点数据结构体
 
-    while(1)
+    while (1)
 	{
 		/* 接收数据，并进行处理 */
-		if(CC1101_ReceivePacket(rxBuffer, &leng))
+		if (CC1101_ReceivePacket(rxBuffer, &leng))
 		{
             
-			debugPrintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X\r\n", 	
+			DebugPrintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X\r\n", 	
             rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3], rxBuffer[4], rxBuffer[5], rxBuffer[6], rxBuffer[7] , rxBuffer[8], rxBuffer[9], rxBuffer[10], rxBuffer[11]);
 			rt_thread_mdelay(10);
             
@@ -68,21 +68,20 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             char temperatureString[10] = "";
             char voltageString[10] = "";
 
-            debugPrintf("无线发送器唯一编码为：0x%X \r\n",  nodeData.deviceId);			
-            sprintf(temperatureString, "%.1f", nodeData.temperatureValue);  //此处涉及保留小数点的操作，在计算函数内实现还是函数外
-            debugPrintf("温度传感器温度值为：%s℃\r\n", temperatureString );
-            sprintf(voltageString, "%.0f", nodeData.voltageValue); //此处涉及保留小数点的操作，在计算函数内实现还是函数外
-            debugPrintf("测得电压数据为：%smV\r\n", voltageString ); 
-            
-            
-			if(0 == ret)
+            DebugPrintf("无线发送器唯一编码为：0x%X \r\n",  nodeData.deviceId);			
+            sprintf(temperatureString, "%.1f", nodeData.temperatureValue);  
+            DebugPrintf("温度传感器温度值为：%s℃\r\n", temperatureString );
+            sprintf(voltageString, "%.0f", nodeData.voltageValue); 
+            DebugPrintf("测得电压数据为：%smV\r\n", voltageString ); 
+                        
+			if (0 == ret)
 			{
 				/* 处理数据 */
 				ret = nodeData.getDeviceNumber(&nodeData);		//根据唯一设备ID号获取数据区编码
             
-                debugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber );
+                DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber );
                 
-				if(0 == ret)
+				if (0 == ret)
 				{
 					/* 保存温度值和电压值 */
 					nodeData.saveTemperature(nodeData);
@@ -92,10 +91,14 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 			else
 			{
 				/* TODO:根据返回值报错 */
-                if(1 == ret)
-                { debugPrintf("校验和错误" ); }
-                if(2 == ret)
-                { debugPrintf("其他错误" ); }
+                if (1 == ret)
+                { 
+                DebugPrintf("校验和错误" ); 
+                }
+                if (2 == ret)
+                { 
+                DebugPrintf("其他错误" ); 
+                }
 			}
 
 			memset(rxBuffer, 0, leng);
@@ -105,7 +108,7 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 			CC1101_SettingsReg();
             num = 0;
 		}
-        if(20 == num)
+        if (20 == num)
         {
             CC1101_Reset();
 			CC1101_SettingsReg();
@@ -134,8 +137,7 @@ int TaskDataReceiveInit(void)
 				   TaskDataReceiveStack,
                    sizeof(TaskDataReceiveStack),
 				   THREAD_TASK_DATA_RECEIVE_PRIO,
-                   5);
-				   
+                   5);				   
 	rt_thread_startup(&ThreadTaskDataReceive);
 				   
     return 0;    
