@@ -16,6 +16,9 @@
 #include "DataFrame.h"
 
 
+//测试打印输出需要
+#include "TaskConfig.h"
+#include <stdio.h>
 
 /*************************************static********************************************/
 /* CC1101无线数据接收的任务优先级，栈空间，任务结构体及入口函数 */
@@ -54,16 +57,31 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 		if(CC1101_ReceivePacket(rxBuffer, &leng))
 		{
             
-			rt_kprintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X\r\n", 	
+			debugPrintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X\r\n", 	
             rxBuffer[0], rxBuffer[1], rxBuffer[2], rxBuffer[3], rxBuffer[4], rxBuffer[5], rxBuffer[6], rxBuffer[7] , rxBuffer[8], rxBuffer[9], rxBuffer[10], rxBuffer[11]);
 			rt_thread_mdelay(10);
             
 			/* 对接收到的数据进行处理 */
 			ret = DataFrameAnalysis(rxBuffer, &nodeData);		//解析无线接收的数据
+            
+            /* 串口打印输出 */
+            char temperatureString[10] = "";
+            char voltageString[10] = "";
+
+            debugPrintf("无线发送器唯一编码为：0x%X \r\n",  nodeData.deviceId);			
+            sprintf(temperatureString, "%.1f", nodeData.temperatureValue);  //此处涉及保留小数点的操作，在计算函数内实现还是函数外
+            debugPrintf("温度传感器温度值为：%s℃\r\n", temperatureString );
+            sprintf(voltageString, "%.0f", nodeData.voltageValue); //此处涉及保留小数点的操作，在计算函数内实现还是函数外
+            debugPrintf("测得电压数据为：%smV\r\n", voltageString ); 
+            
+            
 			if(0 == ret)
 			{
 				/* 处理数据 */
 				ret = nodeData.getDeviceNumber(&nodeData);		//根据唯一设备ID号获取数据区编码
+            
+                debugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber );
+                
 				if(0 == ret)
 				{
 					/* 保存温度值和电压值 */
@@ -73,8 +91,11 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 			}
 			else
 			{
-				/* 根据返回值报错 */
-
+				/* TODO:根据返回值报错 */
+                if(1 == ret)
+                { debugPrintf("校验和错误" ); }
+                if(2 == ret)
+                { debugPrintf("其他错误" ); }
 			}
 
 			memset(rxBuffer, 0, leng);
