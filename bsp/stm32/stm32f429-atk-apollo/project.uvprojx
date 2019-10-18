@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers</IncludePath>
+              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\Task\FATfs</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -588,6 +588,11 @@
               <FileName>CC1101.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\drivers\CC1101.c</FilePath>
+            </File>
+            <File>
+              <FileName>w25qxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\drivers\w25qxx.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -933,6 +938,31 @@
               <FileName>mb_m.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\components\net\freemodbus\modbus\mb_m.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FATfs</GroupName>
+          <Files>
+            <File>
+              <FileName>diskio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\FATfs\diskio.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\FATfs\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffsystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\FATfs\ffsystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>ffunicode.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\FATfs\ffunicode.c</FilePath>
             </File>
           </Files>
         </Group>

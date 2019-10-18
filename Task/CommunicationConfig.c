@@ -20,7 +20,47 @@ uint8_t  g_ModbusSlaveAddress = 0x01;	//Modbus的从机地址
 uint8_t  g_ModbusUartNumber = 1;		//Modbus使用的串口号
 
 
-/********************************function**************************************/
+/*************************************extern********************************************/
+extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
+
+/********************************function**************************************/
+/**
+  * @brief : 获取Modbus串口波特率
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-17][Lei][creat]
+  */
+void GetModbusBandRate(void)
+{
+    switch((usSRegHoldBuf[0] & 0x0300) >> 8)
+    {
+        case 0:
+            g_ModbusBandrate = 2400;
+            break;
+        case 1:
+            g_ModbusBandrate = 4800;
+            break;
+        case 2:
+            g_ModbusBandrate = 9600;
+            break;
+        case 3:
+            g_ModbusBandrate = 115200;
+            break;
+    }
+    
+}
+
+
+/**
+  * @brief : 获取Modbus从机地址
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-17][Lei][creat]
+  */
+void GetModbusSlaveAddress(void)
+{
+    g_ModbusSlaveAddress = usSRegHoldBuf[0] & 0xFF;
+}
 
 

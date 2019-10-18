@@ -28,14 +28,12 @@ static void ModbusSlavePollThreadEntry(void* parameter);
 
 
 /*************************************extern********************************************/
-extern USHORT usSRegInBuf[S_REG_INPUT_NREGS];	    //输入寄存器缓冲区
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 
 
 
 /*************************************function******************************************/
-
 /**
   * @brief : ModBus从机轮询入口
   * @param : void
