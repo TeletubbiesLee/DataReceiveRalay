@@ -8,7 +8,6 @@
   * @update:    [2019-06-21][Lei][creat]
                 [2019-10-18][Gang][update][对一些函数内容进行补充]
   */
-
 /********************************include**************************************/
 #include "DataFrame.h"
 #include "math.h"
@@ -45,6 +44,7 @@ void NodeDataStructInit(NodeDataStruct* nodeData)
     nodeData->saveVoltage = SaveVoltage;
 }
 
+
 /**
   * @brief : CC1101接收数据帧解析
   * @param : sourceData CC1101接收到的数据
@@ -76,6 +76,8 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
 
     return ret;
 }
+
+
 /**
   * @brief : 由设备ID号获取在数据表中对应的编号，将编号记录在结构体中
   * @param : nodeData 保存节点数据的结构体的指针
@@ -88,7 +90,7 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
     uint8_t ret;
     uint16_t i;
     
-    for (i = 0 ; i <=255 ; i++)
+    for (i = 0; i <= 255; i++)
     {
         if ((nodeData->deviceId) == (usSRegHoldBuf[0x708 + i] + (usSRegHoldBuf[0x709 + i] << 16)))
         {
@@ -101,7 +103,7 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
         }        
     }
     
-    return ret;    
+    return ret;
 }
 
 
@@ -119,21 +121,22 @@ static void SaveTemperature(struct NodeData nodeData)
     temperature =((float)((int)((nodeData.temperatureValue + 0.05) * 10))) / 10;
     
     char temperatureString[10] = "";
-    sprintf(temperatureString, "%f",temperature);
-    DebugPrintf("温度保留一位小数：%s\r\n",temperatureString);
-    if(nodeData.isDataValid == true)
+    sprintf(temperatureString, "%f", temperature);
+    DebugPrintf("温度保留一位小数：%s\r\n", temperatureString);
+    if (nodeData.isDataValid == true)
     {
-        if(temperature > 0)
-            {
-              temperatureFormat = (uint16_t)(temperature * 10);
-            }            
-            else
-            {
-              temperatureFormat = 2000 + (uint16_t)(temperature * 10);
-            }    
-        usSRegHoldBuf[0x008 + nodeData.deviceNumber] = temperatureFormat;     
+        if (temperature > 0)
+        {
+            temperatureFormat = (uint16_t)(temperature * 10);
+        }            
+        else
+        {
+            temperatureFormat = 2000 + (uint16_t)(temperature * 10);
+        }
+        usSRegHoldBuf[0x008 + nodeData.deviceNumber] = temperatureFormat;
      }
 }
+
 
 /**
   * @brief : 将电压值保存在数据表中的正确位置
@@ -144,13 +147,13 @@ static void SaveTemperature(struct NodeData nodeData)
   */
 static void SaveVoltage(struct NodeData nodeData)
 {
-    int16_t voltage;
+    int16_t voltage = 0;
     
     if (nodeData.isDataValid == true)
     {
-         voltage = (int16_t)(nodeData.voltageValue);
-         DebugPrintf("电压取整数据：%d\r\n",voltage);
-         usSRegHoldBuf[0x108 + nodeData.deviceNumber] = voltage;  
+        voltage = (int16_t)(nodeData.voltageValue);
+        DebugPrintf("电压取整数据：%d\r\n", voltage);
+        usSRegHoldBuf[0x108 + nodeData.deviceNumber] = voltage;  
     }
 
 }
@@ -165,23 +168,22 @@ static void SaveVoltage(struct NodeData nodeData)
              [2019-10-18][Gang][update][补充函数内容]
   */
 static uint8_t CheckSum(uint8_t* data, uint8_t lenth)
-{    
-    uint8_t i;
-    uint8_t ret;
+{   
+    uint8_t ret = 1;
     uint16_t result = 0;
     
-    for (i = 0;i < lenth - 2; i++)
+    for (uint8_t i = 0; i < (lenth - 2); i++)
     {
       result += data[i];
     }
     
     if (data[lenth - 2] == (result & 0xFF00) >> 8 && data[lenth - 1] == (result & 0x00FF))
     {
-         ret = 0;
+        ret = 0;
     }
     else
     {
-         ret = 1;
+        ret = 1;
     }
 
     return ret;
@@ -191,7 +193,6 @@ static uint8_t CheckSum(uint8_t* data, uint8_t lenth)
 /**
   * @brief : 计算设备唯一ID号
   * @param : data ID号原始值
-  * @param : lenth 原始数据的长度
   * @return: 得出的ID号
   * @updata: [2019-10-17][Lei][creat]
              [2019-10-17][Gang][update][补充函数内容,修改参数]
@@ -209,7 +210,6 @@ static uint32_t CalculateDeviceId(uint8_t* data)
 /**
   * @brief : 计算电压值
   * @param : data 电压原始值
-  * @param : lenth 电压数据的长度
   * @return: 计算出的电压值
   * @updata: [2019-10-17][Lei][creat]
              [2019-10-18][Gang][update][补充函数内容,修改参数]
@@ -225,10 +225,10 @@ static float CalculateVolatge (uint8_t* data)
     return voltageFloat;    
 }
 
+
 /**
   * @brief : 计算温度值
   * @param : data 温度原始值
-  * @param : lenth 温度数据的长度
   * @return: 计算出的温度值
   * @updata: [2019-10-17][Lei][creat]
              [2019-10-17][Gang][update][补充函数内容，修改参数]
@@ -241,9 +241,8 @@ static float CalculateTemperature(uint8_t* data)
     
     temperatureInt = (data[0] << 8) + data[1];
     temperatureFloat = temperatureInt * (2500.0 / 1023);
-    temperature = (5.506 - sqrt(pow(-5.506,2) + 4 * 0.00176 * (870.6 - temperatureFloat))) / (2 * (-0.00176)) + 30;
+    temperature = (5.506 - sqrt(pow(-5.506, 2) + 4 * 0.00176 * (870.6 - temperatureFloat))) / (2 * (-0.00176)) + 30;
     
     return temperature;
 }
-
 

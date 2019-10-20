@@ -14,7 +14,7 @@
 
 /*************************************static********************************************/
 /* 测试任务优先级，栈空间，任务结构体及入口函数 */
-#define THREAD_TASK_TEST_PRIO  9
+#define THREAD_TASK_TEST_PRIO 9
 static rt_uint8_t TaskTestStack[512];
 static struct rt_thread ThreadModbusSlaveData;
 static void ModbusSlaveDataThreadEntry(void* parameter);
