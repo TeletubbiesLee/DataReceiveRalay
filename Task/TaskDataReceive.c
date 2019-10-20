@@ -61,13 +61,13 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             ret = DataFrameAnalysis(rxBuffer, &nodeData);       //解析无线接收的数据
             
             /* 串口打印输出 */
-            char temperatureString[10] = "";
-            char voltageString[10] = "";
+            uint8_t temperatureString[10] = "";
+            uint8_t voltageString[10] = "";
 
             DebugPrintf("无线发送器唯一编码为：0x%X \r\n", nodeData.deviceId);
             sprintf(temperatureString, "%.1f", nodeData.temperatureValue);
             DebugPrintf("温度传感器温度值为：%s℃\r\n", temperatureString );
-            sprintf(voltageString, "%.0f", nodeData.voltageValue);
+            sprintf(voltageString, "%.1f", nodeData.voltageValue);
             DebugPrintf("测得电压数据为：%smV\r\n", voltageString ); 
                         
             if (0 == ret)

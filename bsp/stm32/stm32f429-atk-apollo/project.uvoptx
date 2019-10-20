@@ -1177,7 +1177,7 @@
       <GroupNumber>8</GroupNumber>
       <FileNumber>75</FileNumber>
       <FileType>1</FileType>
-      <tvExp>0</tvExp>
+      <tvExp>1</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>..\..\..\Task\TaskDataReceive.c</PathWithFileName>

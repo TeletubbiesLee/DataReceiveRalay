@@ -12,7 +12,7 @@
 #define __TASK_CONFIG_H_
 
 
-    //#define DEBUG_PRINTF        //开启串口调试
+   // #define DEBUG_PRINTF        //开启串口调试
 
     /**
       * @brief 调试打印的函数定义

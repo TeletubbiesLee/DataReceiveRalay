@@ -87,7 +87,7 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
   */
 static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 {
-    uint8_t ret;
+    uint8_t ret = 1;
     uint16_t i;
     
     for (i = 0; i <= 255; i++)
@@ -116,11 +116,11 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
   */
 static void SaveTemperature(struct NodeData nodeData)
 {    
-    float temperature;
-    uint16_t temperatureFormat;
+    float temperature = 0;
+    uint16_t temperatureFormat = 0;
     temperature =((float)((int)((nodeData.temperatureValue + 0.05) * 10))) / 10;
     
-    char temperatureString[10] = "";
+    uint8_t temperatureString[10] = "";
     sprintf(temperatureString, "%f", temperature);
     DebugPrintf("温度保留一位小数：%s\r\n", temperatureString);
     if (nodeData.isDataValid == true)
