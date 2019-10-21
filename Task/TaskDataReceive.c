@@ -59,7 +59,7 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             
             /* 对接收到的数据进行处理 */
             ret = DataFrameAnalysis(rxBuffer, &nodeData);       //解析无线接收的数据
-            
+                        
             /* 串口打印输出 */
             uint8_t temperatureString[10] = "";
             uint8_t voltageString[10] = "";
