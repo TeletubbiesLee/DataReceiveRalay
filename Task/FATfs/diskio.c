@@ -10,6 +10,7 @@
 #include "ff.h"			/* Obtains integer types */
 #include "diskio.h"		/* Declarations of disk functions */
 #include "w25qxx.h"
+#include "malloc.h"
 
 /* Definitions of physical drive number for each drive */
 #define SD_CARD	 	0  			//SD卡,卷标为0
@@ -110,7 +111,7 @@ DSTATUS disk_initialize (
 DRESULT disk_read (
 	BYTE pdrv,		/* Physical drive nmuber to identify the drive */
 	BYTE *buff,		/* Data buffer to store read data */
-	LBA_t sector,	/* Start sector in LBA */
+	DWORD sector,	/* Start sector in LBA */
 	UINT count		/* Number of sectors to read */
 )
 {
@@ -167,7 +168,7 @@ DRESULT disk_read (
 DRESULT disk_write (
 	BYTE pdrv,			/* Physical drive nmuber to identify the drive */
 	const BYTE *buff,	/* Data to be written */
-	LBA_t sector,		/* Start sector in LBA */
+	DWORD sector,		/* Start sector in LBA */
 	UINT count			/* Number of sectors to write */
 )
 {
@@ -283,3 +284,15 @@ DWORD get_fattime (void)
 {				 
 	return 0;
 }
+
+//动态分配内存
+void *ff_memalloc (UINT size)			
+{
+	return (void*)mymalloc(SRAMIN,size);
+}
+//释放内存
+void ff_memfree (void* mf)		 
+{
+	myfree(SRAMIN,mf);
+}
+
