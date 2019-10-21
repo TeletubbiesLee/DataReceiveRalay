@@ -117,6 +117,7 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 static void SaveTemperature(struct NodeData nodeData)
 {    
     uint16_t temperatureFormat = 0;
+	int16_t temp = 0;
 
     if (nodeData.isDataValid == true)
     {
@@ -127,8 +128,8 @@ static void SaveTemperature(struct NodeData nodeData)
         }            
         else
         {
-            nodeData.temperatureValue = -nodeData.temperatureValue;
-            temperatureFormat = 2000 + (uint16_t)(nodeData.temperatureValue * 10);
+            temp = -nodeData.temperatureValue;
+            temperatureFormat = 2000 + (uint16_t)(temp * 10);
             DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
         }
         usSRegHoldBuf[0x008 + nodeData.deviceNumber] = temperatureFormat;
