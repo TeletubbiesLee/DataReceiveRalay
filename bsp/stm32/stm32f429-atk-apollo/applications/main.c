@@ -13,11 +13,12 @@
 #include <board.h>
 
 #include "TaskModbus.h"
+#include "Test.h"
 #include "TaskDataReceive.h"
 
 
-/* defined the LED0 pin: PB1 */
-#define LED0_PIN    GET_PIN(B, 1)
+/* defined the LED0 pin: PB0 */
+#define LED0_PIN    GET_PIN(B, 0)
 
 int main(void)
 {
@@ -27,8 +28,9 @@ int main(void)
 	rt_thread_mdelay(1000);
 	
     TaskModbusInit();			//创建Modbus相关任务
+    TaskTestInit();             //测试任务
 	TaskDataReceiveInit();		//创建CC1101无线数据接收任务
-	
+
 	
     while (1)
     {
@@ -40,6 +42,7 @@ int main(void)
 
     return RT_EOK;
 }
+
 
 
 
@@ -121,5 +124,4 @@ int main(void)
  
  
  
- 
- 
+
