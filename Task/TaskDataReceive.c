@@ -65,9 +65,9 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             uint8_t voltageString[10] = "";
 
             DebugPrintf("无线发送器唯一编码为：0x%X \r\n", nodeData.deviceId);
-            sprintf(temperatureString, "%.1f", nodeData.temperatureValue);
+            sprintf((char*)temperatureString, "%.1f", nodeData.temperatureValue);
             DebugPrintf("温度传感器温度值为：%s℃\r\n", temperatureString );
-            sprintf(voltageString, "%.1f", nodeData.voltageValue);
+            sprintf((char*)voltageString, "%.1f", nodeData.voltageValue);
             DebugPrintf("测得电压数据为：%smV\r\n", voltageString ); 
                         
             if (0 == ret)

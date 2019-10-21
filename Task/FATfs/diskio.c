@@ -72,7 +72,7 @@ DSTATUS disk_initialize (
 )
 {
 	DSTATUS stat;
-	int result;
+	//int result;
 
 	switch (pdrv) {
 	case SD_CARD :
@@ -115,7 +115,7 @@ DRESULT disk_read (
 )
 {
 	DRESULT res;
-	int result;
+	//int result;
 
 	switch (pdrv) {
 	case SD_CARD :
@@ -172,7 +172,7 @@ DRESULT disk_write (
 )
 {
 	DRESULT res;
-	int result;
+	//int result;
 
 	switch (pdrv) {
 	case SD_CARD :
@@ -227,7 +227,7 @@ DRESULT disk_ioctl (
 )
 {
 	DRESULT res;
-	int result;
+	//int result;
 
 	switch (pdrv) {
 	case SD_CARD :

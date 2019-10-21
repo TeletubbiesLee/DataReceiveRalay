@@ -121,7 +121,7 @@ static void SaveTemperature(struct NodeData nodeData)
     temperature =((float)((int)((nodeData.temperatureValue + 0.05) * 10))) / 10;
     
     uint8_t temperatureString[10] = "";
-    sprintf(temperatureString, "%f", temperature);
+    sprintf((char*)temperatureString, "%f", temperature);
     DebugPrintf("温度保留一位小数：%s\r\n", temperatureString);
     if (nodeData.isDataValid == true)
     {
@@ -219,7 +219,7 @@ static float CalculateVolatge (uint8_t* data)
     uint16_t voltageInt = 0; 
     float voltageFloat = 0;
     
-    voltageInt = (data[0] << 8)+ data[1];
+    voltageInt = (data[0] << 8) + data[1];
     voltageFloat = voltageInt * (2500.0 / 1023) * 2;
     
     return voltageFloat;    
