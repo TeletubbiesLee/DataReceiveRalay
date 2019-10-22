@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>STM32F429IGTx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.13.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.11.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IRAM(0x20000000,0x30000) IRAM2(0x10000000,0x10000) IROM(0x08000000,0x100000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\components\dfs\include;..\..\..\components\dfs\filesystems\elmfat;..\..\..\components\libc\compilers\armlibc;..\..\..\components\dfs\filesystems\devfs</IncludePath>
+              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\components\dfs\include;..\..\..\components\dfs\filesystems\elmfat;..\..\..\components\libc\compilers\armlibc;..\..\..\components\dfs\filesystems\devfs;..\..\..\components\spi;..\..\..\components\spi\sfud\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -420,9 +420,14 @@
               <FilePath>..\libraries\HAL_Drivers\drv_common.c</FilePath>
             </File>
             <File>
-              <FileName>DriverSPI.c</FileName>
+              <FileName>drv_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\drivers\DriverSPI.c</FilePath>
+              <FilePath>..\..\..\Task\drivers\drv_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_spi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\drivers\drv_spi_flash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -430,9 +435,9 @@
           <GroupName>Kernel</GroupName>
           <Files>
             <File>
-              <FileName>clock.c</FileName>
+              <FileName>mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\src\clock.c</FilePath>
+              <FilePath>..\..\..\src\mem.c</FilePath>
             </File>
             <File>
               <FileName>components.c</FileName>
@@ -463,6 +468,11 @@
               <FileName>irq.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\src\irq.c</FilePath>
+            </File>
+            <File>
+              <FileName>clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\src\clock.c</FilePath>
             </File>
             <File>
               <FileName>kservice.c</FileName>
@@ -585,14 +595,29 @@
               <FilePath>..\..\..\components\drivers\src\workqueue.c</FilePath>
             </File>
             <File>
-              <FileName>CC1101.c</FileName>
+              <FileName>spi_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\drivers\CC1101.c</FilePath>
+              <FilePath>..\..\..\components\spi\spi_core.c</FilePath>
             </File>
             <File>
-              <FileName>w25qxx.c</FileName>
+              <FileName>spi_dev.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\drivers\w25qxx.c</FilePath>
+              <FilePath>..\..\..\components\spi\spi_dev.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_sfud.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\spi_flash_sfud.c</FilePath>
+            </File>
+            <File>
+              <FileName>sfud.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\sfud\src\sfud.c</FilePath>
+            </File>
+            <File>
+              <FileName>sfud_sfdp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\sfud\src\sfud_sfdp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -780,19 +805,9 @@
           <GroupName>Task</GroupName>
           <Files>
             <File>
-              <FileName>TaskModbus.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\TaskModbus.c</FilePath>
-            </File>
-            <File>
               <FileName>DataFrame.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\DataFrame.c</FilePath>
-            </File>
-            <File>
-              <FileName>TaskDataReceive.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\TaskDataReceive.c</FilePath>
             </File>
             <File>
               <FileName>CommunicationConfig.c</FileName>

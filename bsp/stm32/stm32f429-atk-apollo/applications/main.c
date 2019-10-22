@@ -20,6 +20,32 @@
 /* defined the LED0 pin: PB0 */
 #define LED0_PIN    GET_PIN(B, 0)
 
+#include <dfs_fs.h>
+
+void file_operate_format(void)
+{ 
+	int code = 0;
+
+    if ((code = dfs_mkfs("elm", RT_SPI_FLASH_NAME)) == 0) 
+    {
+        rt_kprintf("spi flash mk to /spi !\n");
+    }
+    else
+    {
+			rt_kprintf("spi flash mk to /spi failed!, code:%d\n", code);
+    }
+    
+
+     if ((code = dfs_mount(RT_SPI_FLASH_NAME, "/", "elm", 0, 0)) ==0)
+		 {
+			  rt_kprintf("mount  success!\n");
+		 }
+		 else
+		 {
+			 rt_kprintf("mount  failed! code:%d\n", code);
+		 }
+	}
+
 int main(void)
 {
     /* set LED0 pin mode to output */
@@ -27,11 +53,11 @@ int main(void)
 	
 	rt_thread_mdelay(1000);
 	
-    TaskModbusInit();			//创建Modbus相关任务
-    TaskTestInit();             //测试任务
-	TaskDataReceiveInit();		//创建CC1101无线数据接收任务
+ //   TaskModbusInit();			//创建Modbus相关任务
+  //  TaskTestInit();             //测试任务
+	//TaskDataReceiveInit();		//创建CC1101无线数据接收任务
 
-	
+	file_operate_format();
     while (1)
     {
         rt_pin_write(LED0_PIN, PIN_HIGH);

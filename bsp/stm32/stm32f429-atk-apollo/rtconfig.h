@@ -29,9 +29,18 @@
 
 /* Memory Management */
 
+//#define RT_USING_MEMPOOL
+//#define RT_USING_MEMHEAP
+//#define RT_USING_MEMHEAP_AS_HEAP
+//#define RT_USING_HEAP
+
+/* Memory Management */
 #define RT_USING_MEMPOOL
 #define RT_USING_MEMHEAP
-#define RT_USING_MEMHEAP_AS_HEAP
+/* RT_USING_NOHEAP is not set */
+#define RT_USING_SMALL_MEM
+/* RT_USING_SLAB is not set */
+/* RT_USING_MEMHEAP_AS_HEAP is not set */
 #define RT_USING_HEAP
 
 /* Kernel Device Object */
@@ -209,7 +218,29 @@
 
 /* Board extended module Drivers */
 
+/* Using SPI framework */
+#define RT_USING_SPI
+#define RT_USING_SPI2
+#define RT_USING_SPI4
+#define RT_USING_SPI5
 
+#define RT_SPI2_DEVICE_NAME                                            "spi20"
+#define RT_SPI2_BUS_NAME                                               "spi2"
+#define RT_SPI4_DEVICE_NAME                                            "spi40"
+#define RT_SPI4_BUS_NAME                                               "spi4"
+#define RT_SPI5_DEVICE_NAME                                            "spi50"
+#define RT_SPI5_BUS_NAME                                               "spi5"
+#define RT_IO_SPI1_DEVICE_NAME                                         "io_spi10"
+#define RT_IO_SPI1_BUS_NAME                                            "io_spi1"
+
+#define RT_SPI_FRAM_NAME                                               "fram0"
+#define RT_SPI_ETH_NAME                                                "w5500"
+#define RT_SPI_ENCRYPTION_NAME                                         "sc1161y"
+#define RT_SPI_FLASH_NAME                                              "W25Q256FV"
+
+#define RT_USING_SFUD
+#define RT_SFUD_USING_SFDP
+#define RT_SFUD_USING_FLASH_INFO_TABLE
 
 
 #endif
