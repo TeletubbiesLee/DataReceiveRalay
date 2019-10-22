@@ -9,8 +9,6 @@
  */
 
 #include <rtthread.h>
-#include "spi_flash.h"
-#include "spi_flash_sfud.h"
 #include "drv_spi.h"
 
 #if defined(BSP_USING_SPI_FLASH)

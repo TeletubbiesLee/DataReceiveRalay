@@ -11,21 +11,18 @@
 #ifndef __TASK_CONFIG_H_
 #define __TASK_CONFIG_H_
 
+/**
+  * @brief 调试打印的函数定义
+  */
+// #define DEBUG_PRINTF        //开启串口调试
 
-   // #define DEBUG_PRINTF        //开启串口调试
+#ifdef DEBUG_PRINTF
+//开启调试模式
+  #define DebugPrintf(format,...)    rt_kprintf(format, ##__VA_ARGS__)
+#else	/* DEBUG_PRINTF */
+//关闭调试模式
+  #define DebugPrintf(format,...)
+#endif	/* DEBUG_PRINTF */
 
-    /**
-      * @brief 调试打印的函数定义
-      */
-    #ifdef DEBUG_PRINTF
-    //开启调试模式
-    #define DebugPrintf(format,...)    rt_kprintf(format, ##__VA_ARGS__)
- 
-    #else
- 
-    //关闭调试模式
-    #define DebugPrintf(format,...)
-
-    #endif
 
 #endif

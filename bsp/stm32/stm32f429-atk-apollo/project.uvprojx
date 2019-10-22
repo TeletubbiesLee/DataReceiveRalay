@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\Task\FATfs;..\..\..\Task\MALLOC;..\..\..\Task\FATfs\exfuns;..\..\..\Task\FATfs\option</IncludePath>
+              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\components\dfs\include;..\..\..\components\dfs\filesystems\elmfat;..\..\..\components\libc\compilers\armlibc;..\..\..\components\dfs\filesystems\devfs</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -947,52 +947,92 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>FATfs</GroupName>
+          <GroupName>FileSystem</GroupName>
           <Files>
             <File>
-              <FileName>diskio.c</FileName>
+              <FileName>dfs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\diskio.c</FilePath>
+              <FilePath>..\..\..\components\dfs\src\dfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_file.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs_file.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_fs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs_fs.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_posix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs_posix.c</FilePath>
+            </File>
+            <File>
+              <FileName>poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\poll.c</FilePath>
+            </File>
+            <File>
+              <FileName>select.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\select.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_elm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\filesystems\elmfat\dfs_elm.c</FilePath>
             </File>
             <File>
               <FileName>ff.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\ff.c</FilePath>
+              <FilePath>..\..\..\components\dfs\filesystems\elmfat\ff.c</FilePath>
             </File>
             <File>
-              <FileName>ffsystem.c</FileName>
+              <FileName>devfs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\ffsystem.c</FilePath>
+              <FilePath>..\..\..\components\dfs\filesystems\devfs\devfs.c</FilePath>
             </File>
             <File>
-              <FileName>ffunicode.c</FileName>
+              <FileName>ccsbcs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\ffunicode.c</FilePath>
-            </File>
-            <File>
-              <FileName>exfuns.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\exfuns\exfuns.c</FilePath>
-            </File>
-            <File>
-              <FileName>fattester.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\exfuns\fattester.c</FilePath>
-            </File>
-            <File>
-              <FileName>cc936.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\FATfs\option\cc936.c</FilePath>
+              <FilePath>..\..\..\components\dfs\filesystems\elmfat\option\ccsbcs.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>Malloc</GroupName>
+          <GroupName>libc</GroupName>
           <Files>
             <File>
-              <FileName>malloc.c</FileName>
+              <FileName>libc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\MALLOC\malloc.c</FilePath>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\libc.c</FilePath>
+            </File>
+            <File>
+              <FileName>libc_syms.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\libc_syms.c</FilePath>
+            </File>
+            <File>
+              <FileName>mem_std.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\mem_std.c</FilePath>
+            </File>
+            <File>
+              <FileName>stdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\stdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stubs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\stubs.c</FilePath>
+            </File>
+            <File>
+              <FileName>time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\time.c</FilePath>
             </File>
           </Files>
         </Group>

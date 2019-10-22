@@ -15,7 +15,7 @@
 #ifdef RT_USING_POSIX
 #include <sys/time.h> /* for struct timeval */
 
-#if !defined(POLLIN) && !defined(POLLOUT)
+//#if !defined(POLLIN) && !defined(POLLOUT)
 #define POLLIN          (0x01)
 #define POLLRDNORM      (0x01)
 #define POLLRDBAND      (0x01)
@@ -37,7 +37,7 @@ struct pollfd
     short events;
     short revents;
 };
-#endif /* !defined(POLLIN) && !defined(POLLOUT) */
+//#endif /* !defined(POLLIN) && !defined(POLLOUT) */
 
 #define POLLMASK_DEFAULT (POLLIN | POLLOUT | POLLRDNORM | POLLWRNORM)
 int poll(struct pollfd *fds, nfds_t nfds, int timeout);

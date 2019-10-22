@@ -127,7 +127,7 @@ void W25QXX_Write_Enable(void)
 //W25QXX写禁止	
 //将WEL清零  
 void W25QXX_Write_Disable(void)   
-{  
+{
 	W25QXX_CS=0;                            //使能器件   
     SPI5_ReadWriteByte(W25X_WriteDisable);  //发送写禁止指令    
 	W25QXX_CS=1;                            //取消片选     	      
