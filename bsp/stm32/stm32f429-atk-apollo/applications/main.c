@@ -11,6 +11,7 @@
 #include <rtthread.h>
 #include <rtdevice.h>
 #include <board.h>
+#include <dfs_fs.h>
 
 #include "TaskModbus.h"
 #include "Test.h"
@@ -20,7 +21,6 @@
 /* defined the LED0 pin: PB0 */
 #define LED0_PIN    GET_PIN(B, 0)
 
-#include <dfs_fs.h>
 
 void file_operate_format(void)
 { 
@@ -37,14 +37,16 @@ void file_operate_format(void)
     
 
      if ((code = dfs_mount(RT_SPI_FLASH_NAME, "/", "elm", 0, 0)) ==0)
-		 {
-			  rt_kprintf("mount  success!\n");
-		 }
-		 else
-		 {
-			 rt_kprintf("mount  failed! code:%d\n", code);
-		 }
-	}
+	 {
+		  rt_kprintf("mount  success!\n");
+	 }
+	 else
+	 {
+		 rt_kprintf("mount  failed! code:%d\n", code);
+	 }
+}
+
+
 
 int main(void)
 {
@@ -53,9 +55,9 @@ int main(void)
 	
 	rt_thread_mdelay(1000);
 	
- //   TaskModbusInit();			//创建Modbus相关任务
-  //  TaskTestInit();             //测试任务
-	//TaskDataReceiveInit();		//创建CC1101无线数据接收任务
+    TaskModbusInit();			//创建Modbus相关任务
+    TaskTestInit();             //测试任务
+	TaskDataReceiveInit();		//创建CC1101无线数据接收任务
 
 	file_operate_format();
     while (1)

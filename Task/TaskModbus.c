@@ -46,16 +46,6 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
   */
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
-	if (dfs_mkfs("elm", RT_SPI_FLASH_NAME) != -1) 
-    {
-        rt_kprintf("spi flash mk to /spi success!\n");
-    }
-    else
-    {
-        rt_kprintf("spi flash mk to /spi failed!\n");
-    }
-	
-	dfs_mount(RT_SPI_FLASH_NAME, "/sojo", "elm", 0, 0);
 	
 	/* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
 	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  g_ModbusParity);

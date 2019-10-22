@@ -66,12 +66,12 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
         }
         else
         {
-            ret = 1;
+            ret = 1;		//校验码错误
         }
     }
     else
     {
-        ret = 2;
+        ret = 2;			//头校验错误
     }
 
     return ret;
