@@ -15,6 +15,8 @@
 #include "user_mb_app.h"
 #include "CommunicationConfig.h"
 #include "TaskModbus.h"
+#include "dfs_fs.h"
+
 
 
 
@@ -25,6 +27,8 @@ static rt_uint8_t ModbusSlavePollThreadStack[512];
 static struct rt_thread ModbusSlavePollThreadHandle;
 static void ModbusSlavePollThreadEntry(void* parameter);
 
+
+#define RT_SPI_FLASH_NAME "W25Q256FV"
 
 
 /*************************************extern********************************************/
@@ -42,6 +46,7 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
   */
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
+	
 	/* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
 	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  g_ModbusParity);
 		

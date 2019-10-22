@@ -66,12 +66,12 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
         }
         else
         {
-            ret = 1;
+            ret = 1;		//校验码错误
         }
     }
     else
     {
-        ret = 2;
+        ret = 2;			//头校验错误
     }
 
     return ret;
@@ -116,8 +116,8 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
   */
 static void SaveTemperature(struct NodeData nodeData)
 {    
-    float temperature; 
     uint16_t temperatureFormat = 0;
+	int16_t temp = 0;
 
     if (nodeData.isDataValid == true)
     {
@@ -128,8 +128,8 @@ static void SaveTemperature(struct NodeData nodeData)
         }            
         else
         {
-            temperature = -nodeData.temperatureValue;
-            temperatureFormat = 2000 + (uint16_t)(temperature * 10);
+            temp = -nodeData.temperatureValue;
+            temperatureFormat = 2000 + (uint16_t)(temp * 10);
             DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
         }
         usSRegHoldBuf[0x008 + nodeData.deviceNumber] = temperatureFormat;

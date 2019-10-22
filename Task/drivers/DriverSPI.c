@@ -10,7 +10,7 @@
 //版权所有，盗版必究。
 //Copyright(C) 广州市星翼电子科技有限公司 2014-2024
 //All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	
+////////////////////////////////////////////////////////////////////////////////// 
 
 SPI_HandleTypeDef SPI2_Handler;  //SPI2句柄
 SPI_HandleTypeDef SPI5_Handler;  //SPI5句柄
@@ -83,6 +83,7 @@ void SPI5_Init(void)
     SPI5_Handler.Init.CRCCalculation=SPI_CRCCALCULATION_DISABLE;//关闭硬件CRC校验
     SPI5_Handler.Init.CRCPolynomial=7;                  //CRC值计算的多项式
     HAL_SPI_Init(&SPI5_Handler);
+
     
     __HAL_SPI_ENABLE(&SPI5_Handler);                    //使能SPI5
     SPI5_ReadWriteByte(0Xff);                           //启动传输

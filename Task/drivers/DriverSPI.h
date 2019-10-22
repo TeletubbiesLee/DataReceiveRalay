@@ -24,4 +24,6 @@ uint8_t SPI2_ReadWriteByte(uint8_t TxData);
 void SPI5_Init(void);
 void SPI5_SetSpeed(uint8_t SPI_BaudRatePrescaler);
 uint8_t SPI5_ReadWriteByte(uint8_t TxData);
+
+	
 #endif
