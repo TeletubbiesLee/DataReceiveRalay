@@ -16,6 +16,7 @@
 #include "CommunicationConfig.h"
 #include "TaskModbus.h"
 #include "dfs_fs.h"
+#include "JsonFileOperation.h"
 
 
 
@@ -46,9 +47,23 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
   */
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
+	uint8_t ret = 0;
+	
+	vPort_s2j_init();			//!< 初始化json
+	ret = Get_JsonFile();		//!< 获取json文件
+	if(0 != ret)
+	{
+		rt_kprintf("Get ConfigFile.json Fail\r\n");
+		rt_kprintf("Use default Configuration\r\n");
+	}
+	else
+	{
+		rt_kprintf("get config.json success\r\n");
+		SetModbusParameter();
+	}
 	
 	/* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
-	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  g_ModbusParity);
+	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  MB_PAR_NONE);
 		
 	eMBEnable();			//启动FreeModbus
 	

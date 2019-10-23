@@ -11,13 +11,11 @@
  
 
 #include "string.h"
-#include "Interface_S2J.h"
-#include "JsonFileOperation.h"
-//#include "md5.h"
-	
-
 #include "ff.h"
-#include "UserFreeRTOS.h"
+#include <s2j.h>
+#include "JsonFileOperation.h"
+#include "Interface_S2J.h"
+#include "ConfigFile.h"
 	
 static FIL FilePositon;
 
@@ -29,8 +27,8 @@ static FIL FilePositon;
  */
 uint8_t vPort_s2j_init(void)
 {
-    s2jHook.malloc_fn = pvPortMalloc;  //初始化内存申请函数
-    s2jHook.free_fn = vPortFree;
+    s2jHook.malloc_fn = rt_malloc;  //初始化内存申请函数
+    s2jHook.free_fn = rt_free;
 
     s2j_init(&s2jHook);   //初始化struct2json的内存申请
 
@@ -47,21 +45,14 @@ uint8_t vPort_s2j_init(void)
  */
 uint8_t Create_JsonFile(void)
 {
-//    uint8_t md5Buffer[16];
+
     char* string;
     unsigned int writeNum = 0;
     uint8_t res = 0;
 
-    res = f_mkdir("/sojo"); //创建一个目录
-
     uint16_t length = GetConfigFileLength();    //获取长度
 
-    if(res == 0)   //ID号能对应上则退出
-    {
-        return 0;
-    }
-
-    res = f_open(&FilePositon, "/sojo/ConfigFile.json", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在sojo目录下创建一个可读写文件
+    res = f_open(&FilePositon, "/ConfigFile.json", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在根目录下创建一个可读写文件
     
     if(res != 0)
     {
@@ -113,21 +104,21 @@ uint8_t Create_JsonFile(void)
 uint8_t Get_JsonFile(void)
 {
     //TERMINAL_PRODUCT_SERIAL_NUMBER
-    char* string;
+    char* string = NULL;
     FRESULT res = FR_OK;
     uint16_t fileSize = 0;
     cJSON * item;
     cJSON *readJson;
 	cJSON * _item;
 
-    res = f_open(&FilePositon, "/sojo/ConfigFile.json", FA_READ); //在sojo目录下创建一个可读写文件
+    res = f_open(&FilePositon, "/ConfigFile.json", FA_READ); //在sojo目录下创建一个可读写文件
     if(res != FR_OK)
     {
         goto JSON_RES;
     }
     //获取json文件
     fileSize = f_size(&FilePositon);   //获取文件大小
-    string  = pvPortMalloc(fileSize);   //申请内存
+    string  = rt_malloc(fileSize);   //申请内存
 
     res = f_read(&FilePositon, string, fileSize, NULL);
 
@@ -169,7 +160,10 @@ uint8_t Get_JsonFile(void)
     
 JSON_RES:
 	f_close(&FilePositon);
-    vPortFree(string);  //释放内存
+	if(NULL == string)
+	{
+		rt_free(string);  //释放内存
+	}
     return (uint8_t)res;
 }
 

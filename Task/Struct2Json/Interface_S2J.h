@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file Interface_S2J.h
  * @brief 实现struct2json函数对外接口
  * @copyright Copyright (c) 2017 Beijing SOJO Electric CO., LTD.
@@ -13,7 +13,8 @@
 #define __INTER_FACE_S2J_
 
 #include <s2j.h>
-#include "JsonFileOperation.h"
+#include "ConfigFile.h"
+
 
 extern cJSON *ConfigFile_StructToJson(void* struct_obj);         //实现固有参数结构体的struct转json
 extern ConfigFile *ConfigFile_JsonToStruct(cJSON* json_obj);         //实现固有参数结构体的struct转json

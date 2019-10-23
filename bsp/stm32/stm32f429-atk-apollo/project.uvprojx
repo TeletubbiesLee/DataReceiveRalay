@@ -1074,6 +1074,21 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\DataFrame.c</FilePath>
             </File>
+            <File>
+              <FileName>ConfigFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\ConfigFile.c</FilePath>
+            </File>
+            <File>
+              <FileName>Interface_S2J.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\Interface_S2J.c</FilePath>
+            </File>
+            <File>
+              <FileName>JsonFileOperation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\JsonFileOperation.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
