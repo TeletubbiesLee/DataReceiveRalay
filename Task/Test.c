@@ -15,7 +15,7 @@
 /*************************************static********************************************/
 /* 测试任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_TASK_TEST_PRIO 9
-static rt_uint8_t TaskTestStack[512];
+static rt_uint8_t TaskTestStack[4096];
 static struct rt_thread ThreadModbusSlaveData;
 static void ModbusSlaveDataThreadEntry(void* parameter);
 
@@ -31,10 +31,13 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //保持寄存器缓冲区
   */
 static void ModbusSlaveDataThreadEntry(void* parameter)
 {
+	
+	
     while (1)
     {
-        usSRegHoldBuf[2055] = 0xFFFF;
-        usSRegHoldBuf[2056] = 0xFFFF;
+//        usSRegHoldBuf[2055] = 0xFFFF;
+//        usSRegHoldBuf[2056] = 0xFFFF;
+		
         rt_thread_mdelay(1000);
     }
 }

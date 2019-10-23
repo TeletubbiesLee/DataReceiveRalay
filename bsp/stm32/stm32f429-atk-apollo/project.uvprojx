@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\components\dfs\include;..\..\..\components\dfs\filesystems\elmfat;..\..\..\components\libc\compilers\armlibc;..\..\..\components\dfs\filesystems\devfs;..\..\..\components\spi;..\..\..\components\spi\sfud\inc</IncludePath>
+              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\components\dfs\include;..\..\..\components\dfs\filesystems\elmfat;..\..\..\components\libc\compilers\armlibc;..\..\..\components\dfs\filesystems\devfs;..\..\..\components\spi;..\..\..\components\spi\sfud\inc;..\..\..\Task\Struct2Json</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -629,11 +629,6 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\drivers\CC1101.c</FilePath>
             </File>
-            <File>
-              <FileName>w25qxx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\drivers\w25qxx.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -819,16 +814,6 @@
         <Group>
           <GroupName>Task</GroupName>
           <Files>
-            <File>
-              <FileName>DataFrame.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\DataFrame.c</FilePath>
-            </File>
-            <File>
-              <FileName>CommunicationConfig.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\CommunicationConfig.c</FilePath>
-            </File>
             <File>
               <FileName>Test.c</FileName>
               <FileType>1</FileType>
@@ -1073,6 +1058,51 @@
               <FileName>time.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\components\libc\compilers\armlibc\time.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>User/Application</GroupName>
+          <Files>
+            <File>
+              <FileName>CommunicationConfig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\CommunicationConfig.c</FilePath>
+            </File>
+            <File>
+              <FileName>DataFrame.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\DataFrame.c</FilePath>
+            </File>
+            <File>
+              <FileName>ConfigFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\ConfigFile.c</FilePath>
+            </File>
+            <File>
+              <FileName>Interface_S2J.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\Interface_S2J.c</FilePath>
+            </File>
+            <File>
+              <FileName>JsonFileOperation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\JsonFileOperation.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Struct2Json</GroupName>
+          <Files>
+            <File>
+              <FileName>cJSON.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\cJSON.c</FilePath>
+            </File>
+            <File>
+              <FileName>s2j.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\s2j.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -15,7 +15,6 @@
 
 /*************************************global********************************************/
 uint32_t g_ModbusBandrate = 115200;		//Modbus的波特率
-uint8_t  g_ModbusParity = MB_PAR_NONE;	//Modbus的奇偶校验方式，无奇偶校验位
 uint8_t  g_ModbusSlaveAddress = 0x01;	//Modbus的从机地址
 uint8_t  g_ModbusUartNumber = 1;		//Modbus使用的串口号
 
@@ -25,6 +24,17 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 
 /********************************function**************************************/
+/**
+  * @brief : 设置Modbus通信参数
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-23][Lei][creat]
+  */
+void SetModbusParameter(void)
+{
+	
+}
+
 /**
   * @brief : 获取Modbus串口波特率
   * @param : void
