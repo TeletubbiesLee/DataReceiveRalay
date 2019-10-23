@@ -11,7 +11,7 @@
 /********************************include**************************************/
 #include "CommunicationConfig.h"
 #include "user_mb_app.h"
-
+#include "ConfigFile.h"
 
 /*************************************global********************************************/
 uint32_t g_ModbusBandrate = 115200;		//Modbus的波特率
@@ -29,10 +29,13 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
   * @param : void
   * @return: void 
   * @updata: [2019-10-23][Lei][creat]
+             [2019-10-23][Gang][update][补充函数内容]
   */
 void SetModbusParameter(void)
 {
-	
+    g_ModbusBandrate = g_ConfigFile[0].parameter;
+    g_ModbusSlaveAddress = g_ConfigFile[1].parameter;
+    g_ModbusUartNumber = g_ConfigFile[2].parameter;	
 }
 
 /**

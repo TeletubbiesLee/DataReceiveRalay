@@ -24,7 +24,7 @@
 /*************************************static********************************************/
 /* Modbus从机轮训的任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_MODBUS_SLAVE_POLL_PRIO	10
-static rt_uint8_t ModbusSlavePollThreadStack[512];
+static rt_uint8_t ModbusSlavePollThreadStack[1024];
 static struct rt_thread ModbusSlavePollThreadHandle;
 static void ModbusSlavePollThreadEntry(void* parameter);
 
@@ -53,12 +53,12 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 	ret = Get_JsonFile();		//!< 获取json文件
 	if(0 != ret)
 	{
-		rt_kprintf("Get ConfigFile.json Fail\r\n");
-		rt_kprintf("Use default Configuration\r\n");
+		rt_kprintf("Get ConfigFile.json Fail.\r\n");
+		rt_kprintf("Use default Configuration.\r\n");
 	}
 	else
 	{
-		rt_kprintf("get config.json success\r\n");
+		rt_kprintf("Get ConfigFile.json Success.\r\n");
 		SetModbusParameter();
 	}
 	
