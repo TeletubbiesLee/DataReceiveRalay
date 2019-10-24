@@ -105,11 +105,12 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
     for (i = 0; i <= 255; i++)
     {
         /*Modbus保持寄存器地址表中的地址是从0x708开始4个字节  0x708低16位  0x709高16位  共255个*/
-        if ((nodeData->deviceId) == (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + i] \
-			+ (usSRegHoldBuf[(NODE_DEVICE_ID_FIRST_ADDRESS+1) + i] << 16)))
+        if ((nodeData->deviceId) == (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
+			+ (usSRegHoldBuf[(NODE_DEVICE_ID_FIRST_ADDRESS+1) + 2 * i] << 16)))
         {
             nodeData->deviceNumber = i;
             ret = 0;                //Modbus保持寄存器地址表存在此ID
+            break;
         }
         else
         {
@@ -271,6 +272,7 @@ static float CalculateTemperature(uint8_t* data)
   * @param : nodeData 结构体指针
   * @return: void
   * @updata: [2019-10-24][Lei][creat]
+             [2019-10-24][Gang][update][补充函数内容]
   */
 static void CalculateSignalStrength(struct NodeData* nodeData)
 {
@@ -278,7 +280,18 @@ static void CalculateSignalStrength(struct NodeData* nodeData)
 	
 	Read_RSSI_LQI_Register(value);		//获取RSSI和LQI的原始值
 	
-	/* TODO:由RSSI和LQI寄存器值，获取它的实际值，并赋值给结构体 */
+	/* 由RSSI和LQI寄存器值，获取它的实际值，并赋值给结构体 */
+    int8_t RSSI_offset = 75;
+    if(value[0] >= 128)
+    {
+        nodeData->RSSI_Value = (int8_t)((int8_t)(value[0] - 256) / 2) - RSSI_offset;
+    }        
+    else 
+    {
+        nodeData->RSSI_Value = (value[0] / 2) - RSSI_offset;    
+    }
+    
+    nodeData->LQI_Value = value[1] & 0x7F;
 	
 }
 

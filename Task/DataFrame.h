@@ -30,10 +30,10 @@ typedef struct NodeData{
     float temperatureValue;     //温度值
     float voltageValue;         //电压值
     uint8_t deviceNumber;       //设备在数据表中的编号
-	float RSSI_Value;
-	float LQI_Value;
+	int8_t RSSI_Value;
+	uint8_t LQI_Value;
     uint8_t (*getDeviceNumber)(struct NodeData* nodeData);       //根据设备ID号获取设备编号
-    void (*saveTemperature)(struct NodeData nodeData);        //保存温度值
+    void (*saveTemperature)(struct NodeData nodeData);          //保存温度值
     void (*saveVoltage)(struct NodeData nodeData);                //保存电压值
 	void (*saveSignalStrength)(struct NodeData nodeData);		//保存信号强度
 	void (*saveLaunchNumber)(struct NodeData nodeData);			//保存发射次数

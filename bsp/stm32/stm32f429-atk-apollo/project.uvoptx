@@ -157,16 +157,48 @@
           <Type>0</Type>
           <LineNumber>276</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134265066</Address>
+          <Address>134264970</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\..\components\dfs\src\dfs_fs.c</Filename>
+          <Filename>E:\000 My Project\鐢电紗澶存俯搴︽櫤鑳藉湪绾跨洃娴嬬郴缁?DataReceiveRelay\components\dfs\src\dfs_fs.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\rt_thread\../../../components/dfs/src/dfs_fs.c\276</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>111</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134232172</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\000 My Project\鐢电紗澶存俯搴︽櫤鑳藉湪绾跨洃娴嬬郴缁?DataReceiveRelay\Task\DataFrame.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\rt_thread\../../../Task/DataFrame.c\111</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>83</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134245320</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\000 My Project\鐢电紗澶存俯搴︽櫤鑳藉湪绾跨洃娴嬬郴缁?DataReceiveRelay\Task\TaskDataReceive.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\rt_thread\../../../Task/TaskDataReceive.c\83</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

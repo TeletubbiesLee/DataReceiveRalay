@@ -95,8 +95,8 @@ void FileOperateInit(void)
 	 }
 	 else
 	 {
-		 rt_kprintf("mount  failed! code:%d\n", code);
-		 FileOperateFormat();			//挂载失败则进行格式化操作
+          rt_kprintf("mount  failed! code:%d\n", code);
+          FileOperateFormat();			//挂载失败则进行格式化操作
 	 }
 }
 

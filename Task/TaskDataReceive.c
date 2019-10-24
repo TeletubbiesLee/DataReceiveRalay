@@ -71,7 +71,9 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             DebugPrintf("温度传感器温度值为：%s℃\r\n", temperatureString );
             sprintf((char*)voltageString, "%.1f", nodeData.voltageValue);
             DebugPrintf("测得电压数据为：%smV\r\n", voltageString ); 
-                        
+            DebugPrintf("信号强度为：%d \r\n", nodeData.RSSI_Value ); 
+            DebugPrintf("LQI为：%d \r\n", nodeData.LQI_Value );
+            
             if (0 == ret)
             {
                 ret = nodeData.getDeviceNumber(&nodeData);      //根据唯一设备ID号获取数据区编码
@@ -84,6 +86,8 @@ static void TaskDataReceiveThreadEntry(void* parameter)
                     nodeData.saveTemperature(nodeData);
                     nodeData.saveVoltage(nodeData);
 					nodeData.saveSignalStrength(nodeData);
+                    nodeData.saveLaunchNumber(nodeData);
+                    
                 }
             }
             else

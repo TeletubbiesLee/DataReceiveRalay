@@ -11,6 +11,7 @@
 #include "Test.h"
 #include <rtthread.h>
 #include "user_mb_app.h"
+#include "DataFrame.h"
 
 /*************************************static********************************************/
 /* 测试任务优先级，栈空间，任务结构体及入口函数 */
@@ -35,8 +36,14 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
 	
     while (1)
     {
-//        usSRegHoldBuf[2055] = 0xFFFF;
-//        usSRegHoldBuf[2056] = 0xFFFF;
+        /* 将所有存放地址的空间清零*/
+        uint16_t i;
+        for (i = 0; i <= 255; i++)
+        {
+           usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i]= 0;		   
+         }
+        usSRegHoldBuf[0x710] = 0xFFFF;
+        usSRegHoldBuf[0x711] = 0xFFFF; 
 		
         rt_thread_mdelay(1000);
     }
