@@ -80,9 +80,10 @@ static void TaskDataReceiveThreadEntry(void* parameter)
                 
                 if (0 == ret)
                 {
-					/* 保存温度值和电压值 */
+					/* 保存温度值和电压值、信号强度 */
                     nodeData.saveTemperature(nodeData);
                     nodeData.saveVoltage(nodeData);
+					nodeData.saveSignalStrength(nodeData);
                 }
             }
             else

@@ -20,6 +20,7 @@
 
 /* defined the LED0 pin: PB0 */
 #define LED0_PIN    GET_PIN(B, 0)
+#define RT_SPI_FLASH_NAME "W25Q256FV"
 
 
 void FileOperateInit(void);

@@ -58,6 +58,9 @@ const RF_SETTINGS rfSettings =
 };
 
 
+static uint8_t RSSI_RegisterValue = 0;		//RSSI寄存器的值
+static uint8_t LQI_RegisterValue = 0;		//LQI寄存器值
+
 static void CC1101_IO_Init(void);
 static void SPI_WriteReg(uint8_t addr, uint8_t value);
 static void SPI_WriteBrustReg(uint8_t addr, uint8_t *buffer, uint8_t count);
@@ -190,38 +193,40 @@ void CC1101_SetRxMode(void)
 
 uint8_t CC1101_ReceivePacket(uint8_t* rxBuffer, uint8_t* length)
 {
-	  uint8_t status[2];
-	  uint8_t packetLength;
-	  uint8_t i = (*length) * 4;		//具体多少要根据datarate和length来决定
-	
-	  SPI_Strobe(CCxxx0_SRX);			//进入接收状态
-	  delay_us(4);
-	  while(GDO0)
-	  {
-			 delay_us(4);
-			 --i;
-			 if(i < 1)
-			 return 0;
-    }
-	  if(SPI_ReadStatus(CCxxx0_RXBYTES) & BYTES_IN_RXFIFO)	//如果接的字节数不为0
-	  {
-		 packetLength = SPI_ReadReg(CCxxx0_RXFIFO);//读出第一个字节，此字节为该帧数据长度
-         if (packetLength <= *length) 		//如果所要的有效长度小于等于接收到的数据包的长度
-		     {
-            SPI_ReadBrustReg(CCxxx0_RXFIFO, rxBuffer, packetLength); //读出所有接收到的数据
-            *length = packetLength;				//把接收数据长度修改的修改为当前数据的长度
-        
-            // Read the 2 appended status bytes (status[0] = RSSI, status[1] = LQI)
-            SPI_ReadBrustReg(CCxxx0_RXFIFO, status, 2); 	//读出CRC校验位
-						SPI_Strobe(CCxxx0_SFRX);		//清洗接收缓冲区
-            return (status[1] & CRC_OK);			//如果校验成功则返回接收成功
-         }
-		 else 
+	uint8_t status[2];
+	uint8_t packetLength;
+	uint8_t i = (*length) * 4;		//具体多少要根据datarate和length来决定
+
+	SPI_Strobe(CCxxx0_SRX);			//进入接收状态
+	delay_us(4);
+	while(GDO0)
+	{
+		delay_us(4);
+		--i;
+		if(i < 1)
+			return 0;
+	}
+	if(SPI_ReadStatus(CCxxx0_RXBYTES) & BYTES_IN_RXFIFO)	//如果接的字节数不为0
+	{
+		packetLength = SPI_ReadReg(CCxxx0_RXFIFO);//读出第一个字节，此字节为该帧数据长度
+		if (packetLength <= *length) 		//如果所要的有效长度小于等于接收到的数据包的长度
 		{
-            *length = packetLength;
-            SPI_Strobe(CCxxx0_SFRX);		//清洗接收缓冲区
-            return 0;
-        }
+			SPI_ReadBrustReg(CCxxx0_RXFIFO, rxBuffer, packetLength); //读出所有接收到的数据
+			*length = packetLength;				//把接收数据长度修改的修改为当前数据的长度
+
+			// Read the 2 appended status bytes (status[0] = RSSI, status[1] = LQI)
+			SPI_ReadBrustReg(CCxxx0_RXFIFO, status, 2); 	//读出CRC校验位
+			RSSI_RegisterValue = status[0];
+			LQI_RegisterValue = status[1];
+			SPI_Strobe(CCxxx0_SFRX);		//清洗接收缓冲区
+			return (status[1] & CRC_OK);			//如果校验成功则返回接收成功
+		}
+		else 
+		{
+			*length = packetLength;
+			SPI_Strobe(CCxxx0_SFRX);		//清洗接收缓冲区
+			return 0;
+		}
 	}
 	else
 		return 0;
@@ -308,5 +313,12 @@ static uint8_t SPI_ReadStatus(uint8_t addr)
 	CSn = 1;			
 	
 	return value;
+}
+
+/* 读取RSSI和LQI寄存器的值 */
+void Read_RSSI_LQI_Register(uint8_t* value)
+{
+	value[0] = RSSI_RegisterValue;
+	value[1] = LQI_RegisterValue;
 }
 

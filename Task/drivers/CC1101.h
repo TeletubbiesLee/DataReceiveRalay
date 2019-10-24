@@ -163,8 +163,9 @@ void CC1101_SettingsReg(void);
 void CC1101_SendPacket(uint8_t* txBuffer, uint8_t size);
 void CC1101_SetRxMode(void);
 uint8_t CC1101_ReceivePacket(uint8_t* rxBuffer, uint8_t* length);
-
 uint8_t SPI_ReadReg(uint8_t addr);
+void Read_RSSI_LQI_Register(uint8_t* value);
+
 
 #endif
 

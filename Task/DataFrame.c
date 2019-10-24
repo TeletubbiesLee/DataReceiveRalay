@@ -12,6 +12,7 @@
 #include "DataFrame.h"
 #include "math.h"
 #include "user_mb_app.h"
+#include "CC1101.h"
 
 //测试打印输出需要的头文件
 #include "TaskConfig.h"
@@ -27,6 +28,9 @@ static uint8_t CheckSum(uint8_t* data, uint8_t lenth);
 static uint32_t CalculateDeviceId(uint8_t* data);
 static float CalculateVolatge(uint8_t* data);
 static float CalculateTemperature(uint8_t* data);
+static void CalculateSignalStrength(struct NodeData* nodeData);
+static void SaveSignalStrength(struct NodeData nodeData);
+static void SaveLaunchNumber(struct NodeData nodeData);
 
 
 /********************************extern*************************************/
@@ -46,6 +50,8 @@ void NodeDataStructInit(NodeDataStruct* nodeData)
     nodeData->getDeviceNumber = GetDeviceNumber;
     nodeData->saveTemperature = SaveTemperature;
     nodeData->saveVoltage = SaveVoltage;
+	nodeData->saveSignalStrength = SaveSignalStrength;
+	nodeData->saveLaunchNumber = SaveLaunchNumber;
 }
 
 
@@ -63,10 +69,11 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
     {
         if (0 == CheckSum(sourceData, 12))       //判断累加校验和
         {
-            nodeData->deviceId = CalculateDeviceId(&sourceData[2]);
-            nodeData->temperatureValue = CalculateTemperature(&sourceData[6]);
-            nodeData->voltageValue = CalculateVolatge(&sourceData[8]);
-            nodeData->isDataValid = true;
+			CalculateSignalStrength(nodeData);			//获取信号强度
+            nodeData->deviceId = CalculateDeviceId(&sourceData[2]);				//获取设备ID号
+            nodeData->temperatureValue = CalculateTemperature(&sourceData[6]);	//获取温度值
+            nodeData->voltageValue = CalculateVolatge(&sourceData[8]);			//获取电压值
+            nodeData->isDataValid = true;				//使能数据有效标志位
         }
         else
         {
@@ -256,5 +263,46 @@ static float CalculateTemperature(uint8_t* data)
     temperature = (5.506 - sqrt(pow(-5.506, 2) + 4 * 0.00176 * (870.6 - temperatureFloat))) / (2 * (-0.00176)) + 30;
     
     return temperature;
+}
+
+
+/**
+  * @brief : 计算RSSI和LQI的值，获取信号强度
+  * @param : nodeData 结构体指针
+  * @return: void
+  * @updata: [2019-10-24][Lei][creat]
+  */
+static void CalculateSignalStrength(struct NodeData* nodeData)
+{
+	uint8_t value[2] = {0};		//value[0] = RSSI; value[1] = LQI
+	
+	Read_RSSI_LQI_Register(value);		//获取RSSI和LQI的原始值
+	
+	/* TODO:由RSSI和LQI寄存器值，获取它的实际值，并赋值给结构体 */
+	
+}
+
+
+/**
+  * @brief : 保存信号强度值
+  * @param : nodeData 结构体指针
+  * @return: void
+  * @updata: [2019-10-24][Lei][creat]
+  */
+static void SaveSignalStrength(struct NodeData nodeData)
+{
+	
+}
+
+
+/**
+  * @brief : 保存发射器发射次数
+  * @param : nodeData 数据结构体
+  * @return: void
+  * @updata: [2019-10-24][Lei][creat]
+  */
+static void SaveLaunchNumber(struct NodeData nodeData)
+{
+	
 }
 
