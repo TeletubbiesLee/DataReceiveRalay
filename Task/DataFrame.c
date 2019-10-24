@@ -17,6 +17,8 @@
 #include "TaskConfig.h"
 #include <stdio.h>
 
+
+
 /********************************static**************************************/
 static uint8_t GetDeviceNumber(struct NodeData* nodeData);
 static void SaveTemperature(struct NodeData nodeData);
@@ -26,8 +28,10 @@ static uint32_t CalculateDeviceId(uint8_t* data);
 static float CalculateVolatge(uint8_t* data);
 static float CalculateTemperature(uint8_t* data);
 
+
 /********************************extern*************************************/
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //保持寄存器缓冲区
+
 
 /********************************function*************************************/
 /**
@@ -94,7 +98,8 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
     for (i = 0; i <= 255; i++)
     {
         /*Modbus保持寄存器地址表中的地址是从0x708开始4个字节  0x708低16位  0x709高16位  共255个*/
-        if ((nodeData->deviceId) == (usSRegHoldBuf[0x708 + i] + (usSRegHoldBuf[0x709 + i] << 16)))
+        if ((nodeData->deviceId) == (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + i] \
+			+ (usSRegHoldBuf[(NODE_DEVICE_ID_FIRST_ADDRESS+1) + i] << 16)))
         {
             nodeData->deviceNumber = i;
             ret = 0;                //Modbus保持寄存器地址表存在此ID
@@ -121,7 +126,7 @@ static void SaveTemperature(struct NodeData nodeData)
     uint16_t temperatureFormat = 0;
     int16_t temp = 0;
 
-    if (nodeData.isDataValid == true)
+    if (true == nodeData.isDataValid)
     {
         /*当节点温度值大于0，则保留一位小数，并将该值乘以10。温度整数部分为(0，1999]表示温度0.0℃~199.9℃*/
         if (nodeData.temperatureValue > 0)
@@ -137,7 +142,7 @@ static void SaveTemperature(struct NodeData nodeData)
             DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
         }
         /*将转换好格式的数据存储在保持寄存器0x008开始相对应的寄存器中*/
-        usSRegHoldBuf[0x008 + nodeData.deviceNumber] = temperatureFormat;
+        usSRegHoldBuf[TEMPERATURE_FIRST_ADDRESS + nodeData.deviceNumber] = temperatureFormat;
      }
 }
 
@@ -153,12 +158,12 @@ static void SaveVoltage(struct NodeData nodeData)
 {
     int16_t voltage = 0;
     
-    if (nodeData.isDataValid == true)
+    if (true == nodeData.isDataValid)
     {
         voltage = (int16_t)(nodeData.voltageValue);
         DebugPrintf("电压取整数据：%d\r\n", voltage);
         /*将转换好格式的数据存储在保持寄存器0x108开始相对应寄存器中*/
-        usSRegHoldBuf[0x108 + nodeData.deviceNumber] = voltage;  
+        usSRegHoldBuf[VOLTAGE_FIRST_ADDRESS + nodeData.deviceNumber] = voltage;  
     }
 
 }
@@ -205,7 +210,7 @@ static uint8_t CheckSum(uint8_t* data, uint8_t lenth)
 static uint32_t CalculateDeviceId(uint8_t* data)
 {
     uint32_t deviceId = 0;
-    /*由接受到的数据帧计算设备的唯一ID号*/
+    /*由接收到的数据帧计算设备的唯一ID号*/
     deviceId = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
     
     return deviceId;

@@ -19,12 +19,14 @@
 #include "TaskConfig.h"
 #include <stdio.h>
 
+
 /*************************************static********************************************/
 /* CC1101无线数据接收的任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_TASK_DATA_RECEIVE_PRIO    11
 static rt_uint8_t TaskDataReceiveStack[1024];
 static struct rt_thread ThreadTaskDataReceive;
 static void TaskDataReceiveThreadEntry(void* parameter);
+
 
 /*************************************function********************************************/
 /**
@@ -58,7 +60,7 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             rt_thread_mdelay(10);
             
             /* 对接收到的数据进行处理 */
-            ret = DataFrameAnalysis(rxBuffer, &nodeData);       //解析无线接收的数据
+            ret = DataFrameAnalysis(rxBuffer, &nodeData);
                         
             /* 串口打印输出 */
             uint8_t temperatureString[10] = "";
@@ -72,14 +74,13 @@ static void TaskDataReceiveThreadEntry(void* parameter)
                         
             if (0 == ret)
             {
-                /* 处理数据 */
                 ret = nodeData.getDeviceNumber(&nodeData);      //根据唯一设备ID号获取数据区编码
             
                 DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
                 
                 if (0 == ret)
                 {
-                /* 保存温度值和电压值 */
+					/* 保存温度值和电压值 */
                     nodeData.saveTemperature(nodeData);
                     nodeData.saveVoltage(nodeData);
                 }
@@ -98,7 +99,7 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             }
 
             memset(rxBuffer, 0, leng);
-            nodeData.isDataValid = false;
+            nodeData.isDataValid = false;		//一组数据处理完毕，将数据有效标志置为无效
 
             CC1101_Reset();
             CC1101_SettingsReg();

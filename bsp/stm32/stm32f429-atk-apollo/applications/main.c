@@ -22,34 +22,16 @@
 #define LED0_PIN    GET_PIN(B, 0)
 
 
-void FileOperateFormat(void)
-{
-	int code = 0;
-	if ((code = dfs_mkfs("elm", RT_SPI_FLASH_NAME)) == 0) 
-    {
-        rt_kprintf("spi flash mk to /spi !\n");
-    }
-    else
-    {
-		rt_kprintf("spi flash mk to /spi failed!, code:%d\n", code);
-    }
-}
+void FileOperateInit(void);
+void FileOperateFormat(void);
 
-void FileOperateInit(void)
-{ 
-	int code = 0;
 
-     if ((code = dfs_mount(RT_SPI_FLASH_NAME, "/", "elm", 0, 0)) ==0)
-	 {
-		  rt_kprintf("mount  success!\n");
-	 }
-	 else
-	 {
-		 rt_kprintf("mount  failed! code:%d\n", code);
-		 FileOperateFormat();
-	 }
-}
-
+/**
+  * @brief : 程序主函数，创建其他任务，挂载文件系统，开启运行指示灯
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-24][Lei][creat]
+  */
 int main(void)
 {
     /* set LED0 pin mode to output */
@@ -57,7 +39,7 @@ int main(void)
 	
 	rt_thread_mdelay(1000);
 	
-	FileOperateInit();
+	FileOperateInit();			//挂载文件系统
 	
     TaskModbusInit();			//创建Modbus相关任务
     TaskTestInit();             //测试任务
@@ -73,6 +55,48 @@ int main(void)
     }
 
     return RT_EOK;
+}
+
+
+/**
+  * @brief : 文件磁盘格式化
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-24][Lei][creat]
+  */
+void FileOperateFormat(void)
+{
+	int code = 0;
+	if ((code = dfs_mkfs("elm", RT_SPI_FLASH_NAME)) == 0) 
+    {
+        rt_kprintf("spi flash mk to /spi !\n");
+    }
+    else
+    {
+		rt_kprintf("spi flash mk to /spi failed!, code:%d\n", code);
+    }
+}
+
+
+/**
+  * @brief : 文件系统挂载
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-24][Lei][creat]
+  */
+void FileOperateInit(void)
+{ 
+	int code = 0;
+
+     if ((code = dfs_mount(RT_SPI_FLASH_NAME, "/", "elm", 0, 0)) ==0)
+	 {
+		  rt_kprintf("mount  success!\n");
+	 }
+	 else
+	 {
+		 rt_kprintf("mount  failed! code:%d\n", code);
+		 FileOperateFormat();			//挂载失败则进行格式化操作
+	 }
 }
 
 

@@ -14,6 +14,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define TEMPERATURE_FIRST_ADDRESS		0x008		//温度存储首地址
+#define VOLTAGE_FIRST_ADDRESS			0x108		//电压存储首地址
+#define NODE_STATUS_FIRST_ADDRESS		0x408		//发射器节点状态存储首地址
+#define NODE_DEVICE_ID_FIRST_ADDRESS	0x708		//发射器节点设备ID号存储首地址
+
+
 
 /* 保存传感器节点数据，以及对数据操作的结构体 */
 typedef struct NodeData{
