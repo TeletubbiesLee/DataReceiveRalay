@@ -12,7 +12,6 @@
 #define __TASK_DATA_RECEIVE_H_
 
 
-
 int TaskDataReceiveInit(void);
 
 #endif

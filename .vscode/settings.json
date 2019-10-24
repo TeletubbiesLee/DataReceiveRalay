@@ -1,0 +1,12 @@
+{
+    "editor.tabCompletion": "on",
+    "editor.detectIndentation": true,
+    "editor.tabSize": 4,
+    "files.associations": {
+        "communicationconfig.h": "c",
+        "stdint.h": "c",
+        "taskmodbus.h": "c",
+        "user_mb_app.h": "c"
+    }
+    
+}

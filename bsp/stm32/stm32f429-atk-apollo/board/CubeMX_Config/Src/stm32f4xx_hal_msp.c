@@ -499,8 +499,9 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
+	
   /* USER CODE BEGIN SPI5_MspInit 1 */
-
+	
   /* USER CODE END SPI5_MspInit 1 */
   }
 
@@ -800,7 +801,6 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(UART4_IRQn);
   }
-
 
 }
 

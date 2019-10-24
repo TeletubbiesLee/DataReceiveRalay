@@ -335,7 +335,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER, STM32F429xx</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers</IncludePath>
+              <IncludePath>applications;.;board;board\CubeMX_Config\Inc;board\ports;..\libraries\HAL_Drivers;..\libraries\HAL_Drivers\config;..\..\..\include;..\..\..\libcpu\arm\cortex-m4;..\..\..\libcpu\arm\common;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\drivers\include;..\..\..\components\finsh;..\libraries\STM32F4xx_HAL\STM32F4xx_HAL_Driver\Inc;..\libraries\STM32F4xx_HAL\CMSIS\Device\ST\STM32F4xx\Include;..\libraries\STM32F4xx_HAL\CMSIS\Include;..\..\..\components\net\freemodbus\port;..\..\..\components\net\freemodbus\modbus\ascii;..\..\..\components\net\freemodbus\modbus\rtu;..\..\..\components\net\freemodbus\modbus\tcp;..\..\..\components\net\freemodbus\modbus\include;..\..\..\Task;..\..\..\Task\drivers;..\..\..\components\dfs\include;..\..\..\components\dfs\filesystems\elmfat;..\..\..\components\libc\compilers\armlibc;..\..\..\components\dfs\filesystems\devfs;..\..\..\components\spi;..\..\..\components\spi\sfud\inc;..\..\..\Task\Struct2Json</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -420,6 +420,16 @@
               <FilePath>..\libraries\HAL_Drivers\drv_common.c</FilePath>
             </File>
             <File>
+              <FileName>drv_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\drivers\drv_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_spi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\drivers\drv_spi_flash.c</FilePath>
+            </File>
+            <File>
               <FileName>DriverSPI.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\drivers\DriverSPI.c</FilePath>
@@ -430,9 +440,9 @@
           <GroupName>Kernel</GroupName>
           <Files>
             <File>
-              <FileName>clock.c</FileName>
+              <FileName>mem.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\src\clock.c</FilePath>
+              <FilePath>..\..\..\src\mem.c</FilePath>
             </File>
             <File>
               <FileName>components.c</FileName>
@@ -463,6 +473,11 @@
               <FileName>irq.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\src\irq.c</FilePath>
+            </File>
+            <File>
+              <FileName>clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\src\clock.c</FilePath>
             </File>
             <File>
               <FileName>kservice.c</FileName>
@@ -583,6 +598,31 @@
               <FileName>workqueue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\components\drivers\src\workqueue.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\spi_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_dev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\spi_dev.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash_sfud.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\spi_flash_sfud.c</FilePath>
+            </File>
+            <File>
+              <FileName>sfud.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\sfud\src\sfud.c</FilePath>
+            </File>
+            <File>
+              <FileName>sfud_sfdp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\spi\sfud\src\sfud_sfdp.c</FilePath>
             </File>
             <File>
               <FileName>CC1101.c</FileName>
@@ -775,19 +815,19 @@
           <GroupName>Task</GroupName>
           <Files>
             <File>
-              <FileName>TaskModbus.c</FileName>
+              <FileName>Test.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\Task\TaskModbus.c</FilePath>
-            </File>
-            <File>
-              <FileName>DataFrame.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\Task\DataFrame.c</FilePath>
+              <FilePath>..\..\..\Task\Test.c</FilePath>
             </File>
             <File>
               <FileName>TaskDataReceive.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\TaskDataReceive.c</FilePath>
+            </File>
+            <File>
+              <FileName>TaskModbus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\TaskModbus.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -928,6 +968,141 @@
               <FileName>mb_m.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\components\net\freemodbus\modbus\mb_m.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FileSystem</GroupName>
+          <Files>
+            <File>
+              <FileName>dfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_file.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs_file.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_fs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs_fs.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_posix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\dfs_posix.c</FilePath>
+            </File>
+            <File>
+              <FileName>poll.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\poll.c</FilePath>
+            </File>
+            <File>
+              <FileName>select.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\src\select.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_elm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\filesystems\elmfat\dfs_elm.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\filesystems\elmfat\ff.c</FilePath>
+            </File>
+            <File>
+              <FileName>devfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\filesystems\devfs\devfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>ccsbcs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\dfs\filesystems\elmfat\option\ccsbcs.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>libc</GroupName>
+          <Files>
+            <File>
+              <FileName>libc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\libc.c</FilePath>
+            </File>
+            <File>
+              <FileName>libc_syms.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\libc_syms.c</FilePath>
+            </File>
+            <File>
+              <FileName>mem_std.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\mem_std.c</FilePath>
+            </File>
+            <File>
+              <FileName>stdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\stdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stubs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\stubs.c</FilePath>
+            </File>
+            <File>
+              <FileName>time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\components\libc\compilers\armlibc\time.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>User/Application</GroupName>
+          <Files>
+            <File>
+              <FileName>CommunicationConfig.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\CommunicationConfig.c</FilePath>
+            </File>
+            <File>
+              <FileName>DataFrame.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\DataFrame.c</FilePath>
+            </File>
+            <File>
+              <FileName>ConfigFile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\ConfigFile.c</FilePath>
+            </File>
+            <File>
+              <FileName>Interface_S2J.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\Interface_S2J.c</FilePath>
+            </File>
+            <File>
+              <FileName>JsonFileOperation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\JsonFileOperation.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Struct2Json</GroupName>
+          <Files>
+            <File>
+              <FileName>cJSON.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\cJSON.c</FilePath>
+            </File>
+            <File>
+              <FileName>s2j.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Struct2Json\s2j.c</FilePath>
             </File>
           </Files>
         </Group>

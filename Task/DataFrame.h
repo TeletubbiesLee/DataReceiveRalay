@@ -12,9 +12,35 @@
 #define __DATA_FRAME_H_
 
 #include <stdint.h>
-uint32_t BandrateConfig(uint16_t configRegister);
-uint16_t TemperatureDataStorage (double temperature, uint16_t configRegister);
+#include <stdbool.h>
+
+#define TEMPERATURE_FIRST_ADDRESS		0x008		//温度存储首地址
+#define VOLTAGE_FIRST_ADDRESS			0x108		//电压存储首地址
+#define LAUNCH_NUMBER_FIRAT_ADDRESS		0x208		//发射次数存储首地址
+#define NODE_STATUS_FIRST_ADDRESS		0x408		//发射器节点状态存储首地址
+#define NODE_DEVICE_ID_FIRST_ADDRESS	0x708		//发射器节点设备ID号存储首地址
+#define MEASUREMENT_TYPE_FIRAT_ADDRESS	0x908		//发射器测量类型存储首地址
 
 
+
+/* 保存传感器节点数据，以及对数据操作的结构体 */
+typedef struct NodeData{
+    bool isDataValid;           //数据有效标志位
+    uint32_t deviceId;          //设备的唯一ID号
+    float temperatureValue;     //温度值
+    float voltageValue;         //电压值
+    uint8_t deviceNumber;       //设备在数据表中的编号
+	float RSSI_Value;
+	float LQI_Value;
+    uint8_t (*getDeviceNumber)(struct NodeData* nodeData);       //根据设备ID号获取设备编号
+    void (*saveTemperature)(struct NodeData nodeData);        //保存温度值
+    void (*saveVoltage)(struct NodeData nodeData);                //保存电压值
+	void (*saveSignalStrength)(struct NodeData nodeData);		//保存信号强度
+	void (*saveLaunchNumber)(struct NodeData nodeData);			//保存发射次数
+
+}NodeDataStruct;
+
+void NodeDataStructInit(NodeDataStruct* nodeData);          //传感器节点数据结构体初始化函数
+uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData);		//无线接收数据解析
 
 #endif
