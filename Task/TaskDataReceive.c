@@ -72,8 +72,8 @@ static void TaskDataReceiveThreadEntry(void* parameter)
                         
             if (0 == ret)
             {
-            /* 处理数据 */
-            ret = nodeData.getDeviceNumber(&nodeData);      //根据唯一设备ID号获取数据区编码
+                /* 处理数据 */
+                ret = nodeData.getDeviceNumber(&nodeData);      //根据唯一设备ID号获取数据区编码
             
                 DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
                 
@@ -89,11 +89,11 @@ static void TaskDataReceiveThreadEntry(void* parameter)
                 /* 根据返回值报错 */
                 if (1 == ret)
                 { 
-                DebugPrintf("校验和错误" ); 
+                    DebugPrintf("校验和错误" ); 
                 }
                 if (2 == ret)
                 { 
-                DebugPrintf("其他错误" ); 
+                    DebugPrintf("其他错误" ); 
                 }
             }
 

@@ -66,12 +66,12 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
         }
         else
         {
-            ret = 1;		//校验码错误
+            ret = 1;        //校验码错误
         }
     }
     else
     {
-        ret = 2;			//头校验错误
+        ret = 2;            //头校验错误
     }
 
     return ret;
@@ -90,16 +90,18 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
     uint8_t ret = 1;
     uint16_t i;
     
+    /*循环判断设备ID号是否属于Modbus保持寄存器地址表中的地址*/
     for (i = 0; i <= 255; i++)
     {
+        /*Modbus保持寄存器地址表中的地址是从0x708开始4个字节  0x708低16位  0x709高16位  共255个*/
         if ((nodeData->deviceId) == (usSRegHoldBuf[0x708 + i] + (usSRegHoldBuf[0x709 + i] << 16)))
         {
             nodeData->deviceNumber = i;
-            ret = 0;
+            ret = 0;                //Modbus保持寄存器地址表存在此ID
         }
         else
         {
-            ret = 1;
+            ret = 1;                //Modbus保持寄存器地址表不存在此ID
         }        
     }
     
@@ -117,21 +119,24 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 static void SaveTemperature(struct NodeData nodeData)
 {    
     uint16_t temperatureFormat = 0;
-	int16_t temp = 0;
+    int16_t temp = 0;
 
     if (nodeData.isDataValid == true)
     {
+        /*当节点温度值大于0，则保留一位小数，并将该值乘以10。温度整数部分为(0，1999]表示温度0.0℃~199.9℃*/
         if (nodeData.temperatureValue > 0)
         {
             temperatureFormat = (uint16_t)(nodeData.temperatureValue * 10);
             DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
-        }            
+        }
+        /*当节点温度值小于0，则将该值取反，并加2000代表值为负，保留一位小数，并将该值乘以10。[2000,2500]表示温度-0.0℃~-50.0℃*/
         else
         {
             temp = -nodeData.temperatureValue;
             temperatureFormat = 2000 + (uint16_t)(temp * 10);
             DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
         }
+        /*将转换好格式的数据存储在保持寄存器0x008开始相对应的寄存器中*/
         usSRegHoldBuf[0x008 + nodeData.deviceNumber] = temperatureFormat;
      }
 }
@@ -152,6 +157,7 @@ static void SaveVoltage(struct NodeData nodeData)
     {
         voltage = (int16_t)(nodeData.voltageValue);
         DebugPrintf("电压取整数据：%d\r\n", voltage);
+        /*将转换好格式的数据存储在保持寄存器0x108开始相对应寄存器中*/
         usSRegHoldBuf[0x108 + nodeData.deviceNumber] = voltage;  
     }
 
@@ -175,7 +181,7 @@ static uint8_t CheckSum(uint8_t* data, uint8_t lenth)
     {
       result += data[i];
     }
-    
+    /*判断计算得到的校验和与数据帧中的校验和是否相等*/
     if (data[lenth - 2] == (result & 0xFF00) >> 8 && data[lenth - 1] == (result & 0x00FF))
     {
         ret = 0;
@@ -199,7 +205,7 @@ static uint8_t CheckSum(uint8_t* data, uint8_t lenth)
 static uint32_t CalculateDeviceId(uint8_t* data)
 {
     uint32_t deviceId = 0;
-
+    /*由接受到的数据帧计算设备的唯一ID号*/
     deviceId = (data[0] << 24) + (data[1] << 16) + (data[2] << 8) + data[3];
     
     return deviceId;
@@ -217,8 +223,9 @@ static float CalculateVolatge (uint8_t* data)
 {    
     uint16_t voltageInt = 0; 
     float voltageFloat = 0;
-    
+    /*将接收到的电压数据转成16位*/
     voltageInt = (data[0] << 8) + data[1];
+    /*根据ADC公式转换电压值*/
     voltageFloat = voltageInt * (2500.0 / 1023) * 2;
     
     return voltageFloat;    
@@ -240,6 +247,7 @@ static float CalculateTemperature(uint8_t* data)
     
     temperatureInt = (data[0] << 8) + data[1];
     temperatureFloat = temperatureInt * (2500.0 / 1023);
+    /*根据温度传感器数据手册公式转换温度值*/
     temperature = (5.506 - sqrt(pow(-5.506, 2) + 4 * 0.00176 * (870.6 - temperatureFloat))) / (2 * (-0.00176)) + 30;
     
     return temperature;

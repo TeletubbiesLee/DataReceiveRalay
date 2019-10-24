@@ -23,7 +23,7 @@
 
 /*************************************static********************************************/
 /* Modbus从机轮训的任务优先级，栈空间，任务结构体及入口函数 */
-#define THREAD_MODBUS_SLAVE_POLL_PRIO	10
+#define THREAD_MODBUS_SLAVE_POLL_PRIO	20
 static rt_uint8_t ModbusSlavePollThreadStack[1024];
 static struct rt_thread ModbusSlavePollThreadHandle;
 static void ModbusSlavePollThreadEntry(void* parameter);
