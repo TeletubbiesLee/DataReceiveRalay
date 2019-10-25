@@ -95,6 +95,7 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
   * @return: 0:存在ID号; 1:ID号不存在
   * @updata: [2019-10-17][Lei][creat]
              [2019-10-18][Gang][update][补充函数内容]
+             [2019-10-24][Gang][update][修改函数bug]
   */
 static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 {
@@ -298,12 +299,21 @@ static void CalculateSignalStrength(struct NodeData* nodeData)
 
 /**
   * @brief : 保存信号强度值
-  * @param : nodeData 结构体指针
+  * @param : nodeData 数据结构体
   * @return: void
   * @updata: [2019-10-24][Lei][creat]
+             [2019-10-25][Gang][update][补充函数内容]
   */
 static void SaveSignalStrength(struct NodeData nodeData)
 {
+    if (true == nodeData.isDataValid)
+    {
+
+        /*将转换好格式的数据存储在保持寄存器0x408开始相对应寄存器中*/
+        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = nodeData.RSSI_Value;  
+    }
+    DebugPrintf("信号强度寄存器数据：0x%x\r\n", usSRegHoldBuf[0x408+3*4]);    
+    
 	
 }
 
@@ -316,6 +326,13 @@ static void SaveSignalStrength(struct NodeData nodeData)
   */
 static void SaveLaunchNumber(struct NodeData nodeData)
 {
+    if (true == nodeData.isDataValid)
+    {
+        /*将转换好格式的数据存储在保持寄存器0x208开始相对应寄存器中*/
+        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS +  nodeData.deviceNumber]++;  
+    }
+    DebugPrintf("发射次数：%d\r\n", usSRegHoldBuf[0x208+4]);
+    
 	
 }
 

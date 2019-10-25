@@ -18,15 +18,15 @@ ConfigFile g_ConfigFile[] = \
 {
     { 
         .name = "Modbus_Baudrate",			//Modbus波特率
-        .parameter = 9600,    			//kbps
+        .parameter = 0,    			//kbps
         .number = ConfigFileEnum_ModbusBandrate, },
     { 
         .name = "Modbus_SlaveAddress",			//Modbus从机地址
-        .parameter = 2,
+        .parameter = 0,
         .number = ConfigFileEnum_ModbusSlaveAddress, },
     { 
         .name = "Modbus_UartNumber",			//Modbus使用的串口号
-        .parameter = 3,
+        .parameter = 0,
         .number = ConfigFileEnum_ModbusUartNumber, },
 	
 };

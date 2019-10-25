@@ -33,10 +33,32 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
   */
 void SetModbusParameter(void)
 {
+  
     g_ModbusBandrate = g_ConfigFile[0].parameter;
     g_ModbusSlaveAddress = g_ConfigFile[1].parameter;
     g_ModbusUartNumber = g_ConfigFile[2].parameter;	
 }
+
+
+
+/**
+  * @brief : 设置Modbus通信参数
+  * @param : void
+  * @return: void 
+  * @updata: [2019-10-23][Lei][creat]
+             [2019-10-23][Gang][update][补充函数内容]
+  */
+void HostSetModbusParameter(void)
+{
+    GetModbusBandRate();
+    //g_ModbusBandrate = g_ConfigFile[0].parameter;
+    GetModbusSlaveAddress();
+    usSRegHoldBuf[0] &= 0xEFFF;
+    //g_ModbusSlaveAddress = g_ConfigFile[1].parameter;
+    //g_ModbusUartNumber = g_ConfigFile[2].parameter;	
+}
+
+
 
 /**
   * @brief : 获取Modbus串口波特率
@@ -49,16 +71,16 @@ void GetModbusBandRate(void)
     switch((usSRegHoldBuf[0] & 0x0300) >> 8)
     {
         case 0:
-            g_ModbusBandrate = 2400;
+            g_ConfigFile[0].parameter = 2400;
             break;
         case 1:
-            g_ModbusBandrate = 4800;
+            g_ConfigFile[0].parameter = 4800;
             break;
         case 2:
-            g_ModbusBandrate = 9600;
+            g_ConfigFile[0].parameter = 9600;
             break;
         case 3:
-            g_ModbusBandrate = 115200;
+            g_ConfigFile[0].parameter = 115200;
             break;
     }
     
@@ -73,7 +95,7 @@ void GetModbusBandRate(void)
   */
 void GetModbusSlaveAddress(void)
 {
-    g_ModbusSlaveAddress = usSRegHoldBuf[0] & 0xFF;
+    g_ConfigFile[1].parameter = usSRegHoldBuf[0] & 0x00FF;
 }
 
 

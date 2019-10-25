@@ -6,6 +6,7 @@
   * @author:    Lei
   * @date:      2019-10-17
   * @update:    [2019-10-17][Lei][creat]
+                [2019-10-25][Gang][update][增加两个函数的声明]
   */
 
 #ifndef __COMMUNICATION_CONFIG_H_
@@ -18,6 +19,9 @@ extern uint8_t g_ModbusSlaveAddress;
 extern uint8_t g_ModbusUartNumber;
 
 void SetModbusParameter(void);
+void HostSetModbusParameter(void);
+void GetModbusBandRate(void);
+void GetModbusSlaveAddress(void);
 
 #endif
 

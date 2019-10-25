@@ -18,12 +18,14 @@
 #include "dfs_fs.h"
 #include "JsonFileOperation.h"
 
+#include "TaskConfig.h"
+#include "ConfigFile.h"
 
-
+#include "ff.h"
 
 /*************************************static********************************************/
 /* Modbus从机轮训的任务优先级，栈空间，任务结构体及入口函数 */
-#define THREAD_MODBUS_SLAVE_POLL_PRIO	20
+#define THREAD_MODBUS_SLAVE_POLL_PRIO	22
 static rt_uint8_t ModbusSlavePollThreadStack[1024];
 static struct rt_thread ModbusSlavePollThreadHandle;
 static void ModbusSlavePollThreadEntry(void* parameter);
@@ -40,7 +42,7 @@ static void SaveConfigThreadEntry(void* parameter);
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 
-
+int write_json(void);
 
 /*************************************function******************************************/
 /**
@@ -49,12 +51,17 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
   * @return: void 
   * @updata: [2019-06-19][Lei][creat]
   */
+
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
 	
-	/* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
+
+    rt_kprintf("g_ModbusBandrate001 = %d\r\n",g_ModbusBandrate);
+    rt_kprintf("g_ModbusSlaveAddress001 = %d\r\n",g_ModbusSlaveAddress);
+    rt_kprintf("g_ModbusUartNumber001 = %d\r\n",g_ModbusUartNumber);
+    /* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
 	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  MB_PAR_NONE);
-		
+	
 	eMBEnable();			//启动FreeModbus
 	
 	while(1)
@@ -71,30 +78,47 @@ static void ModbusSlavePollThreadEntry(void* parameter)
   * @return: void 
   * @updata: [2019-10-24][Lei][creat]
   */
+
 static void SaveConfigThreadEntry(void* parameter)
 {
 	uint8_t ret = 0;
-	
+
 	vPort_s2j_init();			//!< 初始化json
-	ret = Get_JsonFile();		//!< 获取json文件
-	if(0 != ret)
-	{
-		rt_kprintf("Get ConfigFile.json Fail.\r\n");
-		rt_kprintf("Use default Configuration.\r\n");
-	}
-	else
-	{
-		rt_kprintf("Get ConfigFile.json Success.\r\n");
-		SetModbusParameter();				//由配置文件中设置Modbus参数
-	}
-	
+    ret = Get_JsonFile();		//!< 获取json文件
+    if (0 != ret)
+    {
+        rt_kprintf("Get ConfigFile.json Fail.\r\n");
+        rt_kprintf("Use default Configuration.\r\n");
+    }
+   else
+   {
+       rt_kprintf("Get ConfigFile.json Success.\r\n");
+
+       SetModbusParameter();				//由配置文件中设置Modbus参数
+   }        
+    rt_kprintf("Bandrate = %d\r\n",g_ConfigFile[0].parameter);
+    rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
+    rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);  
+   
 	while(1)
 	{
 		/* TODO:判断是否有参数下发，有的话，就保存文件 */
-        
-		
+        if (((usSRegHoldBuf[0] & 0x1000) >> 12) == 1)
+        {
+            HostSetModbusParameter();				//由保持寄存器0中设置Modbus参数             
+            Create_JsonFile();
+            Get_JsonFile();
+            rt_kprintf("Bandrate = %d\r\n",g_ConfigFile[0].parameter);
+    rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
+    rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);
+           
+           // DebugPrintf("参数下发成功.\r\n");
+            rt_kprintf("g_ConfigFile = %d\r\n",g_ConfigFile[0].parameter);
+        } 
+        rt_thread_mdelay(1000);       
 	}
 }
+
 
 
 /**
@@ -116,6 +140,7 @@ int  TaskModbusInit(void)
 					5);									//线程时间片
 					 
 	rt_thread_startup(&SaveConfigThreadHandle);			//启动线程
+   
 	
 	//创建静态线程   从机轮询
 	rt_thread_init(&ModbusSlavePollThreadHandle,			//线程handle
@@ -131,3 +156,5 @@ int  TaskModbusInit(void)
 
 	return 0;              
 }
+
+

@@ -33,17 +33,20 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //保持寄存器缓冲区
 static void ModbusSlaveDataThreadEntry(void* parameter)
 {
 	
+    rt_thread_mdelay(5000);
+    usSRegHoldBuf[0] = 0x1E02;
 	
     while (1)
     {
         /* 将所有存放地址的空间清零*/
-        uint16_t i;
-        for (i = 0; i <= 255; i++)
-        {
-           usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i]= 0;		   
-         }
-        usSRegHoldBuf[0x710] = 0xFFFF;
-        usSRegHoldBuf[0x711] = 0xFFFF; 
+//        uint16_t i;
+//        for (i = 0; i <= 255; i++)
+//        {
+//           usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i]= 0;		   
+//        }
+//        usSRegHoldBuf[0x710] = 0xFFFF;
+//        usSRegHoldBuf[0x711] = 0xFFFF; 
+        
 		
         rt_thread_mdelay(1000);
     }
