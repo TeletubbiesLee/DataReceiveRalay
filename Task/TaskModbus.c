@@ -54,8 +54,6 @@ int write_json(void);
 
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
-	
-
     rt_kprintf("g_ModbusBandrate001 = %d\r\n",g_ModbusBandrate);
     rt_kprintf("g_ModbusSlaveAddress001 = %d\r\n",g_ModbusSlaveAddress);
     rt_kprintf("g_ModbusUartNumber001 = %d\r\n",g_ModbusUartNumber);
@@ -90,12 +88,11 @@ static void SaveConfigThreadEntry(void* parameter)
         rt_kprintf("Get ConfigFile.json Fail.\r\n");
         rt_kprintf("Use default Configuration.\r\n");
     }
-   else
-   {
-       rt_kprintf("Get ConfigFile.json Success.\r\n");
-
-       SetModbusParameter();				//由配置文件中设置Modbus参数
-   }        
+	else
+	{
+		rt_kprintf("Get ConfigFile.json Success.\r\n");
+		SetModbusParameter();				//由配置文件中设置Modbus参数
+	}        
     rt_kprintf("Bandrate = %d\r\n",g_ConfigFile[0].parameter);
     rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
     rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);  
@@ -109,11 +106,9 @@ static void SaveConfigThreadEntry(void* parameter)
             Create_JsonFile();
             Get_JsonFile();
             rt_kprintf("Bandrate = %d\r\n",g_ConfigFile[0].parameter);
-    rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
-    rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);
-           
-           // DebugPrintf("参数下发成功.\r\n");
-            rt_kprintf("g_ConfigFile = %d\r\n",g_ConfigFile[0].parameter);
+			rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
+			rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);
+			return;
         } 
         rt_thread_mdelay(1000);       
 	}

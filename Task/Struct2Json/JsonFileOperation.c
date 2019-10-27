@@ -59,7 +59,7 @@ uint8_t Create_JsonFile(void)
         res = 1;
     }
     
-    res = f_write(&FilePositon, " \"ConfigFile\":[  \n", sizeof(" \"ConfigFile\":[ \n"), &writeNum);    //依照标准格式进行写入
+    res = f_write(&FilePositon, "{\"ConfigFile\":[  \n", sizeof("{\"ConfigFile\":[ \n"), &writeNum);    //依照标准格式进行写入
     
     for(uint16_t i = 0; i < length; i++)
     {
