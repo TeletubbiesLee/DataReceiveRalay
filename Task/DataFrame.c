@@ -14,9 +14,6 @@
 #include "user_mb_app.h"
 #include "CC1101.h"
 
-//测试打印输出需要的头文件
-#include "TaskConfig.h"
-#include <stdio.h>
 
 
 
@@ -141,14 +138,12 @@ static void SaveTemperature(struct NodeData nodeData)
         if (nodeData.temperatureValue > 0)
         {
             temperatureFormat = (uint16_t)(nodeData.temperatureValue * 10);
-            DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
         }
         /*当节点温度值小于0，则将该值取反，并加2000代表值为负，保留一位小数，并将该值乘以10。[2000,2500]表示温度-0.0℃~-50.0℃*/
         else
         {
             temp = -nodeData.temperatureValue;
             temperatureFormat = 2000 + (uint16_t)(temp * 10);
-            DebugPrintf("温度数据为：%d\r\n", temperatureFormat);
         }
         /*将转换好格式的数据存储在保持寄存器0x008开始相对应的寄存器中*/
         usSRegHoldBuf[TEMPERATURE_FIRST_ADDRESS + nodeData.deviceNumber] = temperatureFormat;
@@ -170,7 +165,6 @@ static void SaveVoltage(struct NodeData nodeData)
     if (true == nodeData.isDataValid)
     {
         voltage = (int16_t)(nodeData.voltageValue);
-        DebugPrintf("电压取整数据：%d\r\n", voltage);
         /*将转换好格式的数据存储在保持寄存器0x108开始相对应寄存器中*/
         usSRegHoldBuf[VOLTAGE_FIRST_ADDRESS + nodeData.deviceNumber] = voltage;  
     }
@@ -286,7 +280,7 @@ static void CalculateSignalStrength(struct NodeData* nodeData)
     if(value[0] >= 128)
     {
         nodeData->RSSI_Value = (int8_t)((int8_t)(value[0] - 256) / 2) - RSSI_offset;
-    }        
+    }
     else 
     {
         nodeData->RSSI_Value = (value[0] / 2) - RSSI_offset;    
@@ -308,13 +302,9 @@ static void SaveSignalStrength(struct NodeData nodeData)
 {
     if (true == nodeData.isDataValid)
     {
-
         /*将转换好格式的数据存储在保持寄存器0x408开始相对应寄存器中*/
         usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = nodeData.RSSI_Value;  
     }
-    DebugPrintf("信号强度寄存器数据：0x%x\r\n", usSRegHoldBuf[0x408+3*4]);    
-    
-	
 }
 
 
@@ -329,10 +319,7 @@ static void SaveLaunchNumber(struct NodeData nodeData)
     if (true == nodeData.isDataValid)
     {
         /*将转换好格式的数据存储在保持寄存器0x208开始相对应寄存器中*/
-        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS +  nodeData.deviceNumber]++;  
+        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + nodeData.deviceNumber]++;
     }
-    DebugPrintf("发射次数：%d\r\n", usSRegHoldBuf[0x208+4]);
-    
-	
 }
 

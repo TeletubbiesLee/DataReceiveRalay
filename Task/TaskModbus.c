@@ -17,11 +17,8 @@
 #include "TaskModbus.h"
 #include "dfs_fs.h"
 #include "JsonFileOperation.h"
-
-#include "TaskConfig.h"
 #include "ConfigFile.h"
-
-#include "ff.h"
+#include <stdbool.h>
 
 /*************************************static********************************************/
 /* Modbus从机轮训的任务优先级，栈空间，任务结构体及入口函数 */
@@ -42,7 +39,6 @@ static void SaveConfigThreadEntry(void* parameter);
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 
-int write_json(void);
 
 /*************************************function******************************************/
 /**
@@ -54,11 +50,12 @@ int write_json(void);
 
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
-    rt_kprintf("g_ModbusBandrate001 = %d\r\n",g_ModbusBandrate);
-    rt_kprintf("g_ModbusSlaveAddress001 = %d\r\n",g_ModbusSlaveAddress);
-    rt_kprintf("g_ModbusUartNumber001 = %d\r\n",g_ModbusUartNumber);
+	uint32_t bandrate = g_ConfigFile[0].parameter;		//波特率
+	uint8_t slaveAddress = g_ConfigFile[1].parameter;	//从机地址
+	uint8_t uartNumber = g_ConfigFile[2].parameter;		//串口号
+	
     /* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
-	eMBInit(MB_RTU, g_ModbusSlaveAddress, g_ModbusUartNumber, g_ModbusBandrate,  MB_PAR_NONE);
+	eMBInit(MB_RTU, slaveAddress, uartNumber, bandrate,  MB_PAR_NONE);
 	
 	eMBEnable();			//启动FreeModbus
 	
@@ -80,6 +77,7 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 static void SaveConfigThreadEntry(void* parameter)
 {
 	uint8_t ret = 0;
+	bool isConfigUpdata = false;
 
 	vPort_s2j_init();			//!< 初始化json
     ret = Get_JsonFile();		//!< 获取json文件
@@ -91,25 +89,25 @@ static void SaveConfigThreadEntry(void* parameter)
 	else
 	{
 		rt_kprintf("Get ConfigFile.json Success.\r\n");
-		SetModbusParameter();				//由配置文件中设置Modbus参数
-	}        
-    rt_kprintf("Bandrate = %d\r\n",g_ConfigFile[0].parameter);
-    rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
-    rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);  
-   
+	}
+	
 	while(1)
 	{
-		/* TODO:判断是否有参数下发，有的话，就保存文件 */
+		/* 判断是否有Modbus参数下发，有的话，就保存文件 */
         if (((usSRegHoldBuf[0] & 0x1000) >> 12) == 1)
         {
-            HostSetModbusParameter();				//由保持寄存器0中设置Modbus参数             
-            Create_JsonFile();
-            Get_JsonFile();
-            rt_kprintf("Bandrate = %d\r\n",g_ConfigFile[0].parameter);
-			rt_kprintf("SlaveAddress001 = %d\r\n",g_ConfigFile[1].parameter);
-			rt_kprintf("UartNumber001 = %d\r\n",g_ConfigFile[2].parameter);
-			return;
-        } 
+            HostSetModbusParameter();				//由保持寄存器0中设置Modbus参数
+			isConfigUpdata = true;
+        }
+		
+		/* TODO：判断是否有其他参数下发 */
+		
+		
+		if(true == isConfigUpdata)
+		{
+			Create_JsonFile();			//有配置更新，则将新的配置保存到json文件中
+		}
+		
         rt_thread_mdelay(1000);       
 	}
 }

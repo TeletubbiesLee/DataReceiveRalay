@@ -13,10 +13,6 @@
 #include "user_mb_app.h"
 #include "ConfigFile.h"
 
-/*************************************global********************************************/
-uint32_t g_ModbusBandrate = 115200;		//Modbus的波特率
-uint8_t  g_ModbusSlaveAddress = 0x01;	//Modbus的从机地址
-uint8_t  g_ModbusUartNumber = 1;		//Modbus使用的串口号
 
 
 /*************************************extern********************************************/
@@ -24,22 +20,6 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 
 /********************************function**************************************/
-/**
-  * @brief : 设置Modbus通信参数
-  * @param : void
-  * @return: void 
-  * @updata: [2019-10-23][Lei][creat]
-             [2019-10-23][Gang][update][补充函数内容]
-  */
-void SetModbusParameter(void)
-{
-  
-    g_ModbusBandrate = g_ConfigFile[0].parameter;
-    g_ModbusSlaveAddress = g_ConfigFile[1].parameter;
-    g_ModbusUartNumber = g_ConfigFile[2].parameter;	
-}
-
-
 
 /**
   * @brief : 设置Modbus通信参数
@@ -47,27 +27,11 @@ void SetModbusParameter(void)
   * @return: void 
   * @updata: [2019-10-23][Lei][creat]
              [2019-10-23][Gang][update][补充函数内容]
+			 [2019-10-28][Lei][函数对参数之间操作，不再分成单个函数]
   */
 void HostSetModbusParameter(void)
 {
-    GetModbusBandRate();
-    //g_ModbusBandrate = g_ConfigFile[0].parameter;
-    GetModbusSlaveAddress();
-    usSRegHoldBuf[0] &= 0xEFFF;
-    //g_ModbusSlaveAddress = g_ConfigFile[1].parameter;
-    //g_ModbusUartNumber = g_ConfigFile[2].parameter;	
-}
-
-
-
-/**
-  * @brief : 获取Modbus串口波特率
-  * @param : void
-  * @return: void 
-  * @updata: [2019-10-17][Lei][creat]
-  */
-void GetModbusBandRate(void)
-{
+	/* 获取波特率 */
     switch((usSRegHoldBuf[0] & 0x0300) >> 8)
     {
         case 0:
@@ -83,19 +47,12 @@ void GetModbusBandRate(void)
             g_ConfigFile[0].parameter = 115200;
             break;
     }
-    
+	
+    g_ConfigFile[1].parameter = usSRegHoldBuf[0] & 0x00FF;		//获取从机地址
+	
+    usSRegHoldBuf[0] &= ~(1 << 12);			//还原配置更新标志位
 }
 
 
-/**
-  * @brief : 获取Modbus从机地址
-  * @param : void
-  * @return: void 
-  * @updata: [2019-10-17][Lei][creat]
-  */
-void GetModbusSlaveAddress(void)
-{
-    g_ConfigFile[1].parameter = usSRegHoldBuf[0] & 0x00FF;
-}
 
 

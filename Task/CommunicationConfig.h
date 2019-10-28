@@ -14,14 +14,8 @@
 
 #include <stdint.h>
 
-extern uint32_t g_ModbusBandrate;
-extern uint8_t g_ModbusSlaveAddress;
-extern uint8_t g_ModbusUartNumber;
 
-void SetModbusParameter(void);
 void HostSetModbusParameter(void);
-void GetModbusBandRate(void);
-void GetModbusSlaveAddress(void);
 
 #endif
 
