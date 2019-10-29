@@ -24,10 +24,6 @@ ConfigFile g_ConfigFile[] = \
         .name = "Modbus_SlaveAddress",			//Modbus从机地址
         .parameter = 1,
         .number = ConfigFileEnum_ModbusSlaveAddress, },
-    { 
-        .name = "Modbus_UartNumber",			//Modbus使用的串口号
-        .parameter = 1,
-        .number = ConfigFileEnum_ModbusUartNumber, },
 	
 };
 /*************************************************END*************************************************/

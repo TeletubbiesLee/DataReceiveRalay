@@ -29,7 +29,7 @@ static void ModbusSlavePollThreadEntry(void* parameter);
 
 /* 保存配置参数到文件的任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_SAVE_CONFIG_PRIO	20
-static rt_uint8_t SaveConfigThreadStack[1024];
+static rt_uint8_t SaveConfigThreadStack[4096];
 static struct rt_thread SaveConfigThreadHandle;
 static void SaveConfigThreadEntry(void* parameter);
 
@@ -52,7 +52,7 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 {
 	uint32_t bandrate = g_ConfigFile[0].parameter;		//波特率
 	uint8_t slaveAddress = g_ConfigFile[1].parameter;	//从机地址
-	uint8_t uartNumber = g_ConfigFile[2].parameter;		//串口号
+	uint8_t uartNumber = 4;		//串口号
 	
     /* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
 	eMBInit(MB_RTU, slaveAddress, uartNumber, bandrate,  MB_PAR_NONE);
@@ -62,6 +62,8 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 	while(1)
 	{
 		eMBPoll();		//FreeModbus从机不断查询
+        //rt_thread_mdelay(1);
+        
 	}
 
 }
@@ -106,6 +108,7 @@ static void SaveConfigThreadEntry(void* parameter)
 		if(true == isConfigUpdata)
 		{
 			Create_JsonFile();			//有配置更新，则将新的配置保存到json文件中
+            isConfigUpdata = false;
 		}
 		
         rt_thread_mdelay(1000);       

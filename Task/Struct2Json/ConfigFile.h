@@ -36,7 +36,6 @@ enum ConfigFileEnum
 {
     ConfigFileEnum_ModbusBandrate = 0,		//(00)Modbus波特率
     ConfigFileEnum_ModbusSlaveAddress,		//(01)Modbus从机地址
-    ConfigFileEnum_ModbusUartNumber,		//(02)Modbus使用的串口号
 
     ConfigFileEnum_Over = 0xFF
 };

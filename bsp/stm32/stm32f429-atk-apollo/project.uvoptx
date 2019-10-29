@@ -157,7 +157,7 @@
           <Type>0</Type>
           <LineNumber>276</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134266122</Address>
+          <Address>134265802</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -173,7 +173,7 @@
           <Type>0</Type>
           <LineNumber>138</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134232822</Address>
+          <Address>134232726</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -189,7 +189,7 @@
           <Type>0</Type>
           <LineNumber>111</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134244998</Address>
+          <Address>134244846</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -199,6 +199,38 @@
           <Filename>E:\000 My Project\鐢电紗澶存俯搴︽櫤鑳藉湪绾跨洃娴嬬郴缁?DataReceiveRelay\Task\TaskModbus.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\rt_thread\../../../Task/TaskModbus.c\111</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>60</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134240864</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\000 My Project\鐢电紗澶存俯搴︽櫤鑳藉湪绾跨洃娴嬬郴缁?DataReceiveRelay\Task\TaskModbus.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\rt_thread\../../../Task/TaskModbus.c\60</Expression>
+        </Bp>
+        <Bp>
+          <Number>4</Number>
+          <Type>0</Type>
+          <LineNumber>58</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134240850</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>E:\000 My Project\鐢电紗澶存俯搴︽櫤鑳藉湪绾跨洃娴嬬郴缁?DataReceiveRelay\Task\TaskModbus.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\rt_thread\../../../Task/TaskModbus.c\58</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -282,7 +314,7 @@
 
   <Group>
     <GroupName>Drivers</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
