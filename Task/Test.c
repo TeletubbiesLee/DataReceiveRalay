@@ -39,16 +39,10 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
     while (1)
     {
         /* 将所有存放地址的空间清零*/
-        uint16_t i;
-        for (i = 0; i <= 255; i++)
-        {
-           usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i]= 0;		   
-        }
-        usSRegHoldBuf[0x710] = 0xFFFF;
-        usSRegHoldBuf[0x711] = 0xFFFF; 
-        
+        usSRegHoldBuf[0x806] = 0xFFFF;
+        usSRegHoldBuf[0x807] = 0xFFFF;
 		
-        rt_thread_mdelay(1000);
+        rt_thread_mdelay(5000);
     }
 }
 

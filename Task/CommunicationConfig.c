@@ -20,7 +20,6 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 
 /********************************function**************************************/
-
 /**
   * @brief : 设置Modbus通信参数
   * @param : void

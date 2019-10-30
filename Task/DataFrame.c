@@ -97,14 +97,16 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
 static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 {
     uint8_t ret = 1;
-    uint16_t i;
+    uint16_t id = 0;		//保存Modbus中读出的id值
     
     /*循环判断设备ID号是否属于Modbus保持寄存器地址表中的地址*/
-    for (i = 0; i <= 255; i++)
+    for (uint16_t i = 0; i <= 255; i++)
     {
+		id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2*i] \
+		+ (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));
+		
         /*Modbus保持寄存器地址表中的地址是从0x708开始4个字节  0x708低16位  0x709高16位  共255个*/
-        if ((nodeData->deviceId) == (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
-			+ (usSRegHoldBuf[(NODE_DEVICE_ID_FIRST_ADDRESS+1) + 2 * i] << 16)))
+        if (nodeData->deviceId == id)
         {
             nodeData->deviceNumber = i;
             ret = 0;                //Modbus保持寄存器地址表存在此ID

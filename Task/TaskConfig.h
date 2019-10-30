@@ -14,7 +14,7 @@
 /**
   * @brief 调试打印的函数定义
   */
-//#define DEBUG_PRINTF        //开启串口调试
+#define DEBUG_PRINTF        //开启串口调试
 
 #ifdef DEBUG_PRINTF
 //开启调试模式

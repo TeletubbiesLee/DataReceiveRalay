@@ -49,10 +49,10 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 
     NodeDataStructInit(&nodeData);      //初始化节点数据结构体
 
-    while (1)
+    while(1)
     {
         /* 接收数据，并进行处理 */
-        if (CC1101_ReceivePacket(rxBuffer, &leng))
+        if(CC1101_ReceivePacket(rxBuffer, &leng))
         {
             
             DebugPrintf("学习板接收数据：0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X, 0x%X\r\n", 
@@ -63,8 +63,8 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             ret = DataFrameAnalysis(rxBuffer, &nodeData);
                         
             /* 串口打印输出 */
-            uint8_t temperatureString[10] = "";
-            uint8_t voltageString[10] = "";
+            uint8_t temperatureString[10] = {0};
+            uint8_t voltageString[10] = {0};
 
             DebugPrintf("无线发送器唯一编码为：0x%X \r\n", nodeData.deviceId);
             sprintf((char*)temperatureString, "%.1f", nodeData.temperatureValue);
@@ -74,32 +74,35 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             DebugPrintf("信号强度为：%d \r\n", nodeData.RSSI_Value ); 
             DebugPrintf("LQI为：%d \r\n", nodeData.LQI_Value );
             
-            if (0 == ret)
+            if(0 == ret)
             {
                 ret = nodeData.getDeviceNumber(&nodeData);      //根据唯一设备ID号获取数据区编码
-            
-                DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
                 
-                if (0 == ret)
+                if(0 == ret)
                 {
+					DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
+					
 					/* 保存温度值和电压值、信号强度 */
                     nodeData.saveTemperature(nodeData);
                     nodeData.saveVoltage(nodeData);
 					nodeData.saveSignalStrength(nodeData);
                     nodeData.saveLaunchNumber(nodeData);
-                    
                 }
+				else
+				{
+					DebugPrintf("设备ID号不存在");
+				}
             }
             else
             {
                 /* 根据返回值报错 */
-                if (1 == ret)
+                if(1 == ret)
                 { 
-                    DebugPrintf("校验和错误" ); 
+                    DebugPrintf("校验和错误"); 
                 }
-                if (2 == ret)
+                else if(2 == ret)
                 { 
-                    DebugPrintf("其他错误" ); 
+                    DebugPrintf("其他错误"); 
                 }
             }
 
@@ -110,7 +113,7 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             CC1101_SettingsReg();
             num = 0;
         }
-        if (20 == num)
+        if(20 == num)
         {
             CC1101_Reset();
             CC1101_SettingsReg();

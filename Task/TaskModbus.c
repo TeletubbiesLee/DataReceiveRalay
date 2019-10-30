@@ -63,7 +63,6 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 	{
 		eMBPoll();		//FreeModbus从机不断查询
         //rt_thread_mdelay(1);
-        
 	}
 
 }

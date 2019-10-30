@@ -122,6 +122,10 @@
 #define RT_SERIAL_RB_BUFSZ 64
 #define RT_USING_PIN
 
+/* Using RTC */
+#define RT_USING_RTC
+#define RT_USING_SOFT_RTC
+
 /* Using Hardware Crypto drivers */
 
 
