@@ -305,7 +305,7 @@ static void SaveSignalStrength(struct NodeData nodeData)
     if (true == nodeData.isDataValid)
     {
         /*将转换好格式的数据存储在保持寄存器0x408开始相对应寄存器中*/
-        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = nodeData.RSSI_Value;  
+        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = nodeData.RSSI_Value;
     }
 }
 

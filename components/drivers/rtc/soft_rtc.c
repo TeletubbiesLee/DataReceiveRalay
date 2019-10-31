@@ -21,7 +21,7 @@
     {.tm_year = year - 1900, .tm_mon = month - 1, .tm_mday = day, .tm_hour = hour, .tm_min = minute, .tm_sec = second}
 
 #ifndef SOFT_RTC_TIME_DEFAULT
-#define SOFT_RTC_TIME_DEFAULT                    RTC_TIME_INIT(2018, 1, 1, 0, 0 ,0)
+#define SOFT_RTC_TIME_DEFAULT                    RTC_TIME_INIT(2019, 10, 30, 0, 0 ,0)
 #endif
 
 static struct rt_device soft_rtc_dev;
