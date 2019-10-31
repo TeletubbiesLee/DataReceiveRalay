@@ -34,7 +34,7 @@ static rt_uint8_t SaveConfigThreadStack[4096];
 static struct rt_thread SaveConfigThreadHandle;
 static void SaveConfigThreadEntry(void* parameter);
 
-
+static bool isModbusRebootFlag = false;		//Modbus修改参数后的重启标志位
 
 /*************************************extern********************************************/
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
@@ -51,9 +51,13 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
-	uint32_t bandrate = g_ConfigFile[0].parameter;		//波特率
-	uint8_t slaveAddress = g_ConfigFile[1].parameter;	//从机地址
+	uint32_t bandrate = 0;		//波特率
+	uint8_t slaveAddress = 0;	//从机地址
 	uint8_t uartNumber = 4;		//串口号
+
+MODBUS_BOOT:
+	bandrate = g_ConfigFile[0].parameter;
+	slaveAddress = g_ConfigFile[1].parameter;
 	
     /* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
 	eMBInit(MB_RTU, slaveAddress, uartNumber, bandrate,  MB_PAR_NONE);
@@ -63,6 +67,14 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 	while(1)
 	{
 		eMBPoll();		//FreeModbus从机不断查询
+		
+		if (true == isModbusRebootFlag)
+		{
+			eMBDisable();
+			eMBClose();
+			isModbusRebootFlag = false;
+			goto MODBUS_BOOT;		//参数设置完毕之后进行重启
+		}
         //rt_thread_mdelay(1);
 	}
 
@@ -127,6 +139,7 @@ static void SaveConfigThreadEntry(void* parameter)
 		{
 			Create_JsonFile();			//有配置更新，则将新的配置保存到json文件中
             isConfigUpdata = false;
+			isModbusRebootFlag = true;
 		}
 		
         rt_thread_mdelay(1000);       
