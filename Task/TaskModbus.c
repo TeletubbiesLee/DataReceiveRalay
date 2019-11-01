@@ -19,6 +19,7 @@
 #include "JsonFileOperation.h"
 #include "ConfigFile.h"
 #include <stdbool.h>
+#include "DataFrame.h"
 
 /*************************************static********************************************/
 /* Modbus从机轮训的任务优先级，栈空间，任务结构体及入口函数 */
@@ -33,7 +34,7 @@ static rt_uint8_t SaveConfigThreadStack[4096];
 static struct rt_thread SaveConfigThreadHandle;
 static void SaveConfigThreadEntry(void* parameter);
 
-
+static bool isModbusRebootFlag = false;		//Modbus修改参数后的重启标志位
 
 /*************************************extern********************************************/
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
@@ -50,9 +51,13 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 
 static void ModbusSlavePollThreadEntry(void* parameter)
 {
-	uint32_t bandrate = g_ConfigFile[0].parameter;		//波特率
-	uint8_t slaveAddress = g_ConfigFile[1].parameter;	//从机地址
+	uint32_t bandrate = 0;		//波特率
+	uint8_t slaveAddress = 0;	//从机地址
 	uint8_t uartNumber = 4;		//串口号
+
+MODBUS_BOOT:
+	bandrate = g_ConfigFile[0].parameter;
+	slaveAddress = g_ConfigFile[1].parameter;
 	
     /* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
 	eMBInit(MB_RTU, slaveAddress, uartNumber, bandrate,  MB_PAR_NONE);
@@ -62,6 +67,14 @@ static void ModbusSlavePollThreadEntry(void* parameter)
 	while(1)
 	{
 		eMBPoll();		//FreeModbus从机不断查询
+		
+		if (true == isModbusRebootFlag)
+		{
+			eMBDisable();
+			eMBClose();
+			isModbusRebootFlag = false;
+			goto MODBUS_BOOT;		//参数设置完毕之后进行重启
+		}
         //rt_thread_mdelay(1);
 	}
 
@@ -81,7 +94,7 @@ static void SaveConfigThreadEntry(void* parameter)
 	bool isConfigUpdata = false;
 
 	vPort_s2j_init();			//!< 初始化json
-    ret = Get_JsonFile();		//!< 获取json文件
+    ret = Get_JsonFile();		//!< 获取json文件,存在json文件则使用文件中配置参数,不存在则使用默认参数
     if (0 != ret)
     {
         rt_kprintf("Get ConfigFile.json Fail.\r\n");
@@ -92,22 +105,41 @@ static void SaveConfigThreadEntry(void* parameter)
 		rt_kprintf("Get ConfigFile.json Success.\r\n");
 	}
 	
+	ret = ReadDeviceIdFile();				//读取CSV文件中的设备编码ID号
+	if (0 != ret)
+    {
+        rt_kprintf("Get DeviceId.csv Fail.\r\n");
+    }
+	else
+	{
+		rt_kprintf("Get DeviceId.csv Success.\r\n");
+	}
+	
 	while(1)
 	{
-		/* 判断是否有Modbus参数下发，有的话，就保存文件 */
-        if (((usSRegHoldBuf[0] & 0x1000) >> 12) == 1)
+		/* 判断是否有Modbus参数下发，有则保存文件 */
+        if (usSRegHoldBuf[CONFIG_FLAG_ADDRESS] & (1 << 0))
         {
             HostSetModbusParameter();				//由保持寄存器0中设置Modbus参数
+			usSRegHoldBuf[CONFIG_FLAG_ADDRESS] &= ~(1 << 0);
 			isConfigUpdata = true;
         }
 		
 		/* TODO：判断是否有其他参数下发 */
 		
 		
+		/* 判断是否有发射器编码下发，有则保存 */
+		if (usSRegHoldBuf[CONFIG_FLAG_ADDRESS] & (1 << 3))
+        {
+            SaveDeviceIdFile();			//保存设备ID号到CSV文件
+			usSRegHoldBuf[CONFIG_FLAG_ADDRESS] &= ~(1 << 3);
+        }
+		
 		if(true == isConfigUpdata)
 		{
 			Create_JsonFile();			//有配置更新，则将新的配置保存到json文件中
             isConfigUpdata = false;
+			isModbusRebootFlag = true;
 		}
 		
         rt_thread_mdelay(1000);       

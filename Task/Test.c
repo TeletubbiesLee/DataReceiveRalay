@@ -46,9 +46,7 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
         usSRegHoldBuf[0x807] = 0xFFFF;
         if(usSRegHoldBuf[0] == 0x1E02)
         {
-            SaveIDCsvFile();
             usSRegHoldBuf[0] &= ~(1 << 12);			//还原配置更新标志位
-            ReadCsvFile();
         }
 		
         rt_thread_mdelay(5000);

@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define CONFIG_FLAG_ADDRESS				0x007		//配置标志位地址
 #define TEMPERATURE_FIRST_ADDRESS		0x008		//温度存储首地址
 #define VOLTAGE_FIRST_ADDRESS			0x108		//电压存储首地址
 #define LAUNCH_NUMBER_FIRAT_ADDRESS		0x208		//发射次数存储首地址

@@ -62,7 +62,7 @@ void HostSetModbusParameter(void)
   * @return: 返回值 
   * @updata: [2019-10-31][Gang][creat]
   */
-int SaveIDCsvFile(void)
+uint8_t SaveDeviceIdFile(void)
 {
     char str[1024] = {0};     //存放需要保存到文件中的字符
     uint8_t res = 0;
@@ -89,7 +89,7 @@ int SaveIDCsvFile(void)
   * @updata: [2019-11-01][Gang][creat]
   */
  
-int ReadCsvFile(void)
+uint8_t ReadDeviceIdFile(void)
 {
     //TERMINAL_PRODUCT_SERIAL_NUMBER
     uint8_t* string = NULL;
