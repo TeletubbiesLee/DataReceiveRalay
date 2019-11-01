@@ -12,11 +12,12 @@
 #include <rtthread.h>
 #include "user_mb_app.h"
 #include "DataFrame.h"
+#include "CommunicationConfig.h"
 
 /*************************************static********************************************/
 /* 测试任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_TASK_TEST_PRIO 9
-static rt_uint8_t TaskTestStack[512];
+static rt_uint8_t TaskTestStack[4096];
 static struct rt_thread ThreadModbusSlaveData;
 static void ModbusSlaveDataThreadEntry(void* parameter);
 
@@ -39,8 +40,16 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
     while (1)
     {
         /* 将所有存放地址的空间清零*/
+        usSRegHoldBuf[0x708] = 0x5AA5;
+        usSRegHoldBuf[0x709] = 0xABBA;
         usSRegHoldBuf[0x806] = 0xFFFF;
         usSRegHoldBuf[0x807] = 0xFFFF;
+        if(usSRegHoldBuf[0] == 0x1E02)
+        {
+            SaveIDCsvFile();
+            usSRegHoldBuf[0] &= ~(1 << 12);			//还原配置更新标志位
+            ReadCsvFile();
+        }
 		
         rt_thread_mdelay(5000);
     }

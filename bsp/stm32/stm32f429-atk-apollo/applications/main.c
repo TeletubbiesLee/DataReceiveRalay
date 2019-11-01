@@ -41,7 +41,7 @@ int main(void)
 	rt_thread_mdelay(1000);
 	
 	FileOperateInit();			//挂载文件系统
-    //FileOperateFormat();
+   // FileOperateFormat();
 	
     TaskModbusInit();			//创建Modbus相关任务
     TaskTestInit();             //测试任务

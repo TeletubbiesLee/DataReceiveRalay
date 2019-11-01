@@ -97,7 +97,7 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
 static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 {
     uint8_t ret = 1;
-    uint16_t id = 0;		//保存Modbus中读出的id值
+    uint32_t id = 0;		//保存Modbus中读出的id值
     
     /*循环判断设备ID号是否属于Modbus保持寄存器地址表中的地址*/
     for (uint16_t i = 0; i <= 255; i++)
@@ -305,8 +305,10 @@ static void SaveSignalStrength(struct NodeData nodeData)
     if (true == nodeData.isDataValid)
     {
         /*将转换好格式的数据存储在保持寄存器0x408开始相对应寄存器中*/
-        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = nodeData.RSSI_Value;  
+        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = (nodeData.RSSI_Value << 8) + nodeData.LQI_Value;  
     }
+    
+    
 }
 
 

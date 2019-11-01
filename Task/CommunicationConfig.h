@@ -16,7 +16,9 @@
 
 
 void HostSetModbusParameter(void);
-
+int SaveIDCsvFile(void);
+int ReadCsvFile(void);
+uint32_t Str2Int(uint8_t *str);
 #endif
 
 
