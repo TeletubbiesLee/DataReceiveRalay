@@ -42,11 +42,16 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
         /* 将所有存放地址的空间清零*/
         usSRegHoldBuf[0x708] = 0x5AA5;
         usSRegHoldBuf[0x709] = 0xABBA;
+        usSRegHoldBuf[0x710] = 0x5AA5;
+        usSRegHoldBuf[0x711] = 0xABBA;
         usSRegHoldBuf[0x806] = 0xFFFF;
         usSRegHoldBuf[0x807] = 0xFFFF;
         if(usSRegHoldBuf[0] == 0x1E02)
         {
+           // ReadDeviceIdFile();
+            SaveDeviceIdFile();
             usSRegHoldBuf[0] &= ~(1 << 12);			//还原配置更新标志位
+            ReadDeviceIdFile();
         }
 		
         rt_thread_mdelay(5000);

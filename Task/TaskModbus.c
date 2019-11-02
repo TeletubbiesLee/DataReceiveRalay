@@ -105,7 +105,7 @@ static void SaveConfigThreadEntry(void* parameter)
 		rt_kprintf("Get ConfigFile.json Success.\r\n");
 	}
 	
-	ret = ReadDeviceIdFile();				//读取CSV文件中的设备编码ID号
+	//ret = ReadDeviceIdFile();				//读取CSV文件中的设备编码ID号
 	if (0 != ret)
     {
         rt_kprintf("Get DeviceId.csv Fail.\r\n");

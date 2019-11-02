@@ -18,11 +18,11 @@
 #include <stdio.h>
 #include "string.h"
 
-
+#include "TaskConfig.h"
 /*************************************extern********************************************/
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
 /*************************************static********************************************/
-static FIL FilePositon;
+static FIL FileStructure;
 /********************************function**************************************/
 /**
   * @brief : 设置Modbus通信参数
@@ -62,25 +62,55 @@ void HostSetModbusParameter(void)
   * @return: 返回值 
   * @updata: [2019-10-31][Gang][creat]
   */
+//uint8_t SaveDeviceIdFile(void)
+//{
+//    char str[1024] = {0};     //存放需要保存到文件中的字符
+//    uint8_t res = 0;
+//    uint32_t id = 0;		//保存Modbus中读出的id值
+//    unsigned int writeNum = 0;
+//    res = f_open(&FilePositon, "/SaveID.csv", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在根目录下创建一个可读写文件
+//    for (uint16_t i = 0; i <= 255; i++)
+//    {        
+//        id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
+//		+ (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));
+//        sprintf(str,"%u,%u,\n", i, id);
+//        res = f_write(&FilePositon, str, strlen(str), &writeNum); 
+//        memset(str, 0, strlen(str));       
+//    }
+//    f_close(&FilePositon);
+//    return res;
+// }
 uint8_t SaveDeviceIdFile(void)
 {
-    char str[1024] = {0};     //存放需要保存到文件中的字符
+    uint8_t str[1024] = {0};     //存放需要保存到文件中的字符
+    uint8_t strid[1024] = {0};     //存放需要保存到文件中的字符
     uint8_t res = 0;
-    uint32_t id = 0;		//保存Modbus中读出的id值
-    unsigned int writeNum = 0;
-    res = f_open(&FilePositon, "/SaveID.csv", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在根目录下创建一个可读写文件
+    uint32_t id = 0;             //保存Modbus中读出的id值
+    res = f_open(&FileStructure, "/DeviceId.csv", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在根目录下创建一个可读写DeviceId.csv文件
+    /*将编号0到255共256个地址保存到DeviceId.csv*/
     for (uint16_t i = 0; i <= 255; i++)
-    {        
+    {
+
+        Int_Str(str,(uint32_t)i);
+        f_puts((TCHAR *)str,&FileStructure);
+        DebugPrintf("str001 = %s ", str);
+        memset((char *)str, 0, strlen((char *)str)); 
+        f_putc(',',&FileStructure);
+        
         id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
-		+ (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));
-        sprintf(str,"%u,%u,\n", i, id);
-        res = f_write(&FilePositon, str, strlen(str), &writeNum); 
-        memset(str, 0, strlen(str));       
+        + (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));        
+
+        Int_Str(strid,id);
+        DebugPrintf("str002 = %s ", strid);
+        f_puts((char *)strid,&FileStructure);
+        memset(strid, 0, strlen((char *)strid)); 
+        f_putc(',',&FileStructure);
+        DebugPrintf("\n");
+        f_putc('\n',&FileStructure);            
     }
-    f_close(&FilePositon);
+    f_close(&FileStructure);
     return res;
  }
-
  
  /**
   * @brief : 将csv文件中的地址保存到modbus寄存器中
@@ -100,13 +130,14 @@ uint8_t ReadDeviceIdFile(void)
     uint8_t  num = 0;
     int j = 0;
     //获取json文件
-	res = f_open(&FilePositon, "/SaveID.csv", FA_READ);
-    fileSize = f_size(&FilePositon);   //获取文件大小
+	res = f_open(&FileStructure, "/DeviceId.csv", FA_READ);
+    fileSize = f_size(&FileStructure);   //获取文件大小
     string  = rt_malloc(fileSize);   //申请内存
-    while ((string = f_gets(string ,fileSize, &FilePositon)) != NULL)
+    while ((string = f_gets(string ,fileSize, &FileStructure)) != NULL)
     {        
         record = strtok(string,",");
         num =  Str2Int(record);
+        rt_kprintf("%d ",num);
         while (record != NULL)
         {			                        
 			if (j == 1)                
@@ -115,13 +146,14 @@ uint8_t ReadDeviceIdFile(void)
             }
 			record = strtok(NULL, ",");            
             temp =  Str2Int(record);
+            rt_kprintf("%X ",temp);
             usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * num] = temp&0x0000FFFF;           
 		    usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * num] = (temp&0xFFFF0000) >> 16;            
 			j++;		   
         }
         j = 0;           
     } 
-     f_close (&FilePositon);
+     f_close (&FileStructure);
      return 0;   
  }
  /**
@@ -144,4 +176,33 @@ uint32_t Str2Int(uint8_t *str)
 	return m;
 }
 
+/**
+ * @brief : 将整数转换为字符串
+ * @param : intnum  要转换的整数
+ * @param : p_str  字符串输出指针
+ * @return: 无 
+ * @updata: [2019-11-01][Gang][creat]
+*/
+void Int_Str(uint8_t *p_str, uint32_t intnum)
+{
+    uint32_t i;
+    uint32_t divider = 1000000000;
+    uint32_t pos = 0; 
+    uint32_t status = 0;
 
+    for (i = 0; i < 10; i++)
+    {
+        p_str[pos++] = (intnum / divider) + 48;
+
+        intnum = intnum % divider;
+        divider /= 10;
+        if ((p_str[pos-1] == '0') & (status == 0))
+        {
+             pos = 0;
+        }
+        else
+        {
+             status++;
+        }
+    }
+}
