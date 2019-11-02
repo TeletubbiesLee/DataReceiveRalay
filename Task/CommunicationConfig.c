@@ -4,8 +4,9 @@
   * @brief:     上位机对数据接收中继的通信配置相关程序文件
   * @version:   V1.0.0 
   * @author:    Lei
-  * @date:      2019-10-17
+  * @date:       2019-10-17
   * @update:    [2019-10-17][Lei][creat]
+                [2019-11-01][Gang][update]
   */
 
 /********************************include**************************************/
@@ -17,12 +18,12 @@
 #include "DataFrame.h"
 #include <stdio.h>
 #include "string.h"
-
+//测试打印需要
 #include "TaskConfig.h"
 /*************************************extern********************************************/
-extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];	//保持寄存器缓冲区
+extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //保持寄存器缓冲区
 /*************************************static********************************************/
-static FIL FileStructure;
+static FIL FileStructure;               //DeviceId.csv该文件的文件结构体
 /********************************function**************************************/
 /**
   * @brief : 设置Modbus通信参数
@@ -30,11 +31,11 @@ static FIL FileStructure;
   * @return: void 
   * @updata: [2019-10-23][Lei][creat]
              [2019-10-23][Gang][update][补充函数内容]
-			 [2019-10-28][Lei][函数对参数之间操作，不再分成单个函数]
+             [2019-10-28][Lei][函数对参数之间操作，不再分成单个函数]
   */
 void HostSetModbusParameter(void)
 {
-	/* 获取波特率 */
+    /* 获取波特率 */
     switch((usSRegHoldBuf[0] & 0x0300) >> 8)
     {
         case 0:
@@ -49,11 +50,13 @@ void HostSetModbusParameter(void)
         case 3:
             g_ConfigFile[0].parameter = 115200;
             break;
+        default:
+            break;
     }
-	
-    g_ConfigFile[1].parameter = usSRegHoldBuf[0] & 0x00FF;		//获取从机地址
-	
-    usSRegHoldBuf[0] &= ~(1 << 12);			//还原配置更新标志位
+    
+    g_ConfigFile[1].parameter = usSRegHoldBuf[0] & 0x00FF;        //获取从机地址
+    
+    usSRegHoldBuf[0] &= ~(1 << 12);             //还原配置更新标志位
 }
 
 /**
@@ -62,32 +65,15 @@ void HostSetModbusParameter(void)
   * @return: 返回值 
   * @updata: [2019-10-31][Gang][creat]
   */
-//uint8_t SaveDeviceIdFile(void)
-//{
-//    char str[1024] = {0};     //存放需要保存到文件中的字符
-//    uint8_t res = 0;
-//    uint32_t id = 0;		//保存Modbus中读出的id值
-//    unsigned int writeNum = 0;
-//    res = f_open(&FilePositon, "/SaveID.csv", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在根目录下创建一个可读写文件
-//    for (uint16_t i = 0; i <= 255; i++)
-//    {        
-//        id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
-//		+ (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));
-//        sprintf(str,"%u,%u,\n", i, id);
-//        res = f_write(&FilePositon, str, strlen(str), &writeNum); 
-//        memset(str, 0, strlen(str));       
-//    }
-//    f_close(&FilePositon);
-//    return res;
-// }
+
 uint8_t SaveDeviceIdFile(void)
 {
-    uint8_t str[1024] = {0};     //存放需要保存到文件中的字符
+    uint8_t str[1024] = {0};       //存放需要保存到文件中的字符
     uint8_t strid[1024] = {0};     //存放需要保存到文件中的字符
     uint8_t res = 0;
-    uint32_t id = 0;             //保存Modbus中读出的id值
+    uint32_t id = 0;               //保存Modbus中读出的id值
     res = f_open(&FileStructure, "/DeviceId.csv", FA_CREATE_ALWAYS|FA_WRITE|FA_READ); //在根目录下创建一个可读写DeviceId.csv文件
-    /*将编号0到255共256个地址保存到DeviceId.csv*/
+    /*将编号0到255共256个发射器编号保存到DeviceId.csv*/
     for (uint16_t i = 0; i <= 255; i++)
     {
 
@@ -100,15 +86,15 @@ uint8_t SaveDeviceIdFile(void)
         id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
         + (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));        
 
-        Int_Str(strid,id);
-        DebugPrintf("str002 = %s ", strid);
+        Int_Str(str,id);
+        DebugPrintf("str002 = %s ", str);
         f_puts((char *)strid,&FileStructure);
-        memset(strid, 0, strlen((char *)strid)); 
+        memset(str, 0, strlen((char *)str)); 
         f_putc(',',&FileStructure);
         DebugPrintf("\n");
         f_putc('\n',&FileStructure);            
     }
-    f_close(&FileStructure);
+    res = f_close(&FileStructure);
     return res;
  }
  
@@ -130,7 +116,7 @@ uint8_t ReadDeviceIdFile(void)
     uint8_t  num = 0;
     int j = 0;
     //获取json文件
-	res = f_open(&FileStructure, "/DeviceId.csv", FA_READ);
+    res = f_open(&FileStructure, "/DeviceId.csv", FA_READ);
     fileSize = f_size(&FileStructure);   //获取文件大小
     string  = rt_malloc(fileSize);   //申请内存
     while ((string = f_gets(string ,fileSize, &FileStructure)) != NULL)
@@ -139,22 +125,22 @@ uint8_t ReadDeviceIdFile(void)
         num =  Str2Int(record);
         rt_kprintf("%d ",num);
         while (record != NULL)
-        {			                        
-			if (j == 1)                
-			{
+        {                        
+            if (1 == j)                
+            {
                 break;
             }
-			record = strtok(NULL, ",");            
-            temp =  Str2Int(record);
-            rt_kprintf("%X ",temp);
+            record = strtok(NULL, ",");            
+            temp = Str2Int(record);
+            rt_kprintf("%X \n",temp);
             usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * num] = temp&0x0000FFFF;           
-		    usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * num] = (temp&0xFFFF0000) >> 16;            
-			j++;		   
+            usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * num] = (temp&0xFFFF0000) >> 16;
+            j++;  
         }
         j = 0;           
     } 
      f_close (&FileStructure);
-     return 0;   
+     return res;   
  }
  /**
   * @brief : 将字符转为32位无符号数
@@ -164,16 +150,16 @@ uint8_t ReadDeviceIdFile(void)
   */
 uint32_t Str2Int(uint8_t *str)
 {
-	uint32_t m = 0;
-	while (*str != '\0')
-	{
-		if (*str< '0' || *str > '9')
-		return 0;
-		m *= 10;
-		m += *str - '0';// '0'的ASCII码
-		str++;
-	}
-	return m;
+    uint32_t m = 0;
+    while (*str != '\0')
+    {
+        if (*str< '0' || *str > '9')
+        return 0;
+        m *= 10;
+        m += *str - '0';// '0'的ASCII码
+        str++;
+    }
+    return m;
 }
 
 /**
