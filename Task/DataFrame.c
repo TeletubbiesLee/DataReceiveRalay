@@ -15,8 +15,6 @@
 #include "CC1101.h"
 
 
-
-
 /********************************static**************************************/
 static uint8_t GetDeviceNumber(struct NodeData* nodeData);
 static void SaveTemperature(struct NodeData nodeData);
@@ -47,8 +45,8 @@ void NodeDataStructInit(NodeDataStruct* nodeData)
     nodeData->getDeviceNumber = GetDeviceNumber;
     nodeData->saveTemperature = SaveTemperature;
     nodeData->saveVoltage = SaveVoltage;
-	nodeData->saveSignalStrength = SaveSignalStrength;
-	nodeData->saveLaunchNumber = SaveLaunchNumber;
+    nodeData->saveSignalStrength = SaveSignalStrength;
+    nodeData->saveLaunchNumber = SaveLaunchNumber;
 }
 
 
@@ -66,11 +64,11 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
     {
         if (0 == CheckSum(sourceData, 12))       //判断累加校验和
         {
-			CalculateSignalStrength(nodeData);			//获取信号强度
-            nodeData->deviceId = CalculateDeviceId(&sourceData[2]);				//获取设备ID号
-            nodeData->temperatureValue = CalculateTemperature(&sourceData[6]);	//获取温度值
-            nodeData->voltageValue = CalculateVolatge(&sourceData[8]);			//获取电压值
-            nodeData->isDataValid = true;				//使能数据有效标志位
+            CalculateSignalStrength(nodeData);        //获取信号强度
+            nodeData->deviceId = CalculateDeviceId(&sourceData[2]);             //获取设备ID号
+            nodeData->temperatureValue = CalculateTemperature(&sourceData[6]);  //获取温度值
+            nodeData->voltageValue = CalculateVolatge(&sourceData[8]);          //获取电压值
+            nodeData->isDataValid = true;            //使能数据有效标志位
         }
         else
         {
@@ -97,14 +95,14 @@ uint8_t DataFrameAnalysis(uint8_t* sourceData, NodeDataStruct* nodeData)
 static uint8_t GetDeviceNumber(struct NodeData* nodeData)
 {
     uint8_t ret = 1;
-    uint32_t id = 0;		//保存Modbus中读出的id值
+    uint32_t id = 0;        //保存Modbus中读出的id值
     
     /*循环判断设备ID号是否属于Modbus保持寄存器地址表中的地址*/
     for (uint16_t i = 0; i <= 255; i++)
     {
-		id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2*i] \
-		+ (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));
-		
+        id = (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 2 * i] \
+        + (usSRegHoldBuf[NODE_DEVICE_ID_FIRST_ADDRESS + 1 + 2 * i] << 16));
+        
         /*Modbus保持寄存器地址表中的地址是从0x708开始4个字节  0x708低16位  0x709高16位  共255个*/
         if (nodeData->deviceId == id)
         {
@@ -273,11 +271,11 @@ static float CalculateTemperature(uint8_t* data)
   */
 static void CalculateSignalStrength(struct NodeData* nodeData)
 {
-	uint8_t value[2] = {0};		//value[0] = RSSI; value[1] = LQI
-	
-	Read_RSSI_LQI_Register(value);		//获取RSSI和LQI的原始值
-	
-	/* 由RSSI和LQI寄存器值，获取它的实际值，并赋值给结构体 */
+    uint8_t value[2] = {0};             //value[0] = RSSI; value[1] = LQI
+    
+    Read_RSSI_LQI_Register(value);      //获取RSSI和LQI的原始值
+    
+    /* 由RSSI和LQI寄存器值，获取它的实际值，并赋值给结构体 */
     int8_t RSSI_offset = 75;
     if(value[0] >= 128)
     {
@@ -289,7 +287,7 @@ static void CalculateSignalStrength(struct NodeData* nodeData)
     }
     
     nodeData->LQI_Value = value[1] & 0x7F;
-	
+    
 }
 
 
@@ -305,7 +303,7 @@ static void SaveSignalStrength(struct NodeData nodeData)
     if (true == nodeData.isDataValid)
     {
         /*将转换好格式的数据存储在保持寄存器0x408开始相对应寄存器中*/
-        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 3 * nodeData.deviceNumber] = (nodeData.RSSI_Value << 8) + nodeData.LQI_Value;  
+        usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 2 + 3 * nodeData.deviceNumber] = (nodeData.RSSI_Value << 8) + nodeData.LQI_Value;  
     }
     
     
@@ -320,10 +318,13 @@ static void SaveSignalStrength(struct NodeData nodeData)
   */
 static void SaveLaunchNumber(struct NodeData nodeData)
 {
+    static uint32_t launchNumber = 0 ;
     if (true == nodeData.isDataValid)
-    {
-        /*将转换好格式的数据存储在保持寄存器0x208开始相对应寄存器中*/
-        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + nodeData.deviceNumber]++;
+    {   
+        ++launchNumber;          
+        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] = launchNumber & 0x0000FFFF;
+        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (launchNumber & 0xFFFF0000) >> 16;
+             
     }
-}
 
+ }

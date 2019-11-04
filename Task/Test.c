@@ -34,7 +34,7 @@ extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //±£³Ö¼Ä´æÆ÷»º³åÇø
 static void ModbusSlaveDataThreadEntry(void* parameter)
 {
 	
-    rt_thread_mdelay(5000);
+    //rt_thread_mdelay(5000);
     
 	
     while (1)
@@ -46,7 +46,7 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
         usSRegHoldBuf[0x711] = 0xABBA;
         usSRegHoldBuf[0x806] = 0xFFFF;
         usSRegHoldBuf[0x807] = 0xFFFF;
-
+        
 		
         rt_thread_mdelay(5000);
     }
