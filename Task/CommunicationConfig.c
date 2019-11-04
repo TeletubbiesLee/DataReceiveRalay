@@ -88,6 +88,8 @@ void SaveModbusParameter(void)
         usSRegHoldBuf[0] |= (1 << 8);
         usSRegHoldBuf[0] |= (1 << 9);
     }
+    usSRegHoldBuf[0] |= (1 << 10);
+    usSRegHoldBuf[0] |= (1 << 11);
 }
 
 /**
