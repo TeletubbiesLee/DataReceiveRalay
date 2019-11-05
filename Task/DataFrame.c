@@ -13,6 +13,7 @@
 #include "math.h"
 #include "user_mb_app.h"
 #include "CC1101.h"
+#include "Timer.h"
 
 
 /********************************static**************************************/
@@ -115,7 +116,7 @@ static uint8_t GetDeviceNumber(struct NodeData* nodeData)
         else
         {
             ret = 1;                //Modbus保持寄存器地址表不存在此ID
-        }        
+        }
     }
     
     return ret;
@@ -335,10 +336,18 @@ static void SaveLaunchNumber(struct NodeData nodeData)
   * @param : nodeData 数据结构体
   * @return: void
   * @updata: [2019-11-05][Lei][creat]
+             [2019-11-06][Gang][update][增加函数内容]
   */
 static void SaveReceiveTime(struct NodeData nodeData)
 {
-	/* TODO:根据GetNodeOvertime函数，把时间保存到usSRegHoldBuf中 */
-	
+    /*根据GetNodeOvertime函数，把时间保存到usSRegHoldBuf中 */
+    static uint32_t receiveTime = 0 ;
+    if (true == nodeData.isDataValid)
+    {             
+        receiveTime = GetNodeOvertime();
+        usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] = receiveTime & 0x0000FFFF;
+        usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (receiveTime & 0xFFFF0000) >> 16;    
+    }
+    
 }
  

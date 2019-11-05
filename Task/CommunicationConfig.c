@@ -37,7 +37,7 @@ static FIL FileStructure;               //DeviceId.csv该文件的文件结构�
 void HostSetModbusParameter(void)
 {
     /* 获取波特率 */
-    switch((usSRegHoldBuf[0] & 0x0300) >> 8)
+    switch ((usSRegHoldBuf[0] & 0x0300) >> 8)
     {
         case 0:
             g_ConfigFile[0].parameter = 2400;
@@ -76,22 +76,22 @@ void ConfigModbusHoldRegister(void)
     {
         usSRegHoldBuf[0] |= (0 << 9 | 0 << 8);
     }
-    else if(4800 == g_ConfigFile[0].parameter)
+    else if (4800 == g_ConfigFile[0].parameter)
     {
         usSRegHoldBuf[0] |= (0 << 9 | 1 << 8);
     }
-    else if(9600 == g_ConfigFile[0].parameter)
+    else if (9600 == g_ConfigFile[0].parameter)
     {
         usSRegHoldBuf[0] |= (1 << 9 | 0 << 8);
     }
-    else if(115200 == g_ConfigFile[0].parameter)
+    else if (115200 == g_ConfigFile[0].parameter)
     {
         usSRegHoldBuf[0] |= (1 << 9 | 1 << 8);
     }
-	
-    usSRegHoldBuf[0] |= (1 << 11 | 1 << 10);			//配置串口格式
-	
-	usSRegHoldBuf[1] = g_ConfigFile[2].parameter;		//配置发射器超时时间
+    
+    usSRegHoldBuf[0] |= (1 << 11 | 1 << 10);            //配置串口格式
+    
+    usSRegHoldBuf[1] = g_ConfigFile[2].parameter;       //配置发射器超时时间
 }
 
 /**
@@ -212,7 +212,7 @@ void IntToStr(uint8_t *p_str, uint32_t intnum)
 
         intnum = intnum % divider;
         divider /= 10;
-        if ((p_str[pos-1] == '0') & (status == 0))
+        if (('0' == p_str[pos-1]) & (0 == status))
         {
              pos = 0;
         }

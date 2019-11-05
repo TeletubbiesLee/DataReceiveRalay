@@ -16,12 +16,12 @@
 #include "DataFrame.h"
 #include "Timer.h"
 #include "ConfigFile.h"
-
+#include "user_mb_app.h"
 //测试打印输出需要
 #include "TaskConfig.h"
 #include <stdio.h>
 
-
+extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];
 /*************************************static********************************************/
 /* CC1101无线数据接收的任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_TASK_DATA_RECEIVE_PRIO    11
@@ -82,34 +82,34 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             DebugPrintf("信号强度为：%d \r\n", nodeData.RSSI_Value ); 
             DebugPrintf("LQI为：%d \r\n", nodeData.LQI_Value );
             
-            if(0 == ret)
+            if (0 == ret)
             {
                 ret = nodeData.getDeviceNumber(&nodeData);      //根据唯一设备ID号获取数据区编码
                 
-                if(0 == ret)
+                if (0 == ret)
                 {
-					DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
-					
-					/* 保存温度值和电压值、信号强度、接收时刻 */
+                    DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
+                    
+                    /* 保存温度值和电压值、信号强度、接收时刻 */
                     nodeData.saveTemperature(nodeData);
                     nodeData.saveVoltage(nodeData);
-					nodeData.saveSignalStrength(nodeData);
+                    nodeData.saveSignalStrength(nodeData);
                     nodeData.saveLaunchNumber(nodeData);
-					nodeData.saveReceiveTime(nodeData);
+                    nodeData.saveReceiveTime(nodeData);
                 }
-				else
-				{
-					DebugPrintf("设备ID号不存在");
-				}
+                else
+                {
+                    DebugPrintf("设备ID号不存在");
+                }
             }
             else
             {
                 /* 根据返回值报错 */
-                if(1 == ret)
+                if (1 == ret)
                 { 
                     DebugPrintf("校验和错误"); 
                 }
-                else if(2 == ret)
+                else if (2 == ret)
                 { 
                     DebugPrintf("其他错误"); 
                 }
@@ -122,7 +122,7 @@ static void TaskDataReceiveThreadEntry(void* parameter)
             CC1101_SettingsReg();
             num = 0;
         }
-        if(20 == num)
+        if (20 == num)
         {
             CC1101_Reset();
             CC1101_SettingsReg();
@@ -143,29 +143,40 @@ static void TaskDataReceiveThreadEntry(void* parameter)
   */
 static void TaskCheckOverTimeThreadEntry(void* parameter)
 {
-	uint32_t startTime = 0;			//存放某一节点上次接收时刻
-	uint32_t overtime = g_ConfigFile[2].parameter * 60;			//设置的超时时间
-	uint8_t ret = 0;
-	
-	TimerInit();		//初始化检测节点超时的定时器
-	
-	/* 轮流判断256个节点是否超时，如果超时，就清空相关数据 */
-	for(uint16_t i = 0; i < 256; i++)
-	{
-		/* TODO:从usSRegHoldBuf中获取第i个的接收时刻 */
-		
-		if(0 == startTime)		//如果上一次接收时刻为0，直接跳过这一节点判断
-		{
-			continue;
-		}
-		
-		ret = CheckOvertime(startTime, overtime);
-		if(0 != ret)
-		{
-			/* TODO:清空超时的节点的数据 */
-			
-		}
-	}
+    uint32_t startTime = 0;           //存放某一节点上次接收时刻
+    uint32_t overtime = g_ConfigFile[2].parameter * 60;         //设置的超时时间
+    uint8_t ret = 0;
+    
+    TimerInit();        //初始化检测节点超时的定时器
+    while (1)
+    {   /* 轮流判断256个节点是否超时，如果超时，就清空相关数据 */
+        for (uint16_t i = 0; i < 256; i++)
+        {
+            /* TODO:从usSRegHoldBuf中获取第i个的接收时刻 */
+            startTime = usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 2 * i]\
+            + (usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 1 + 2 * i] << 16);
+            if (0 == startTime)		//如果上一次接收时刻为0，直接跳过这一节点判断
+            {
+                continue;
+            }
+            
+            ret = CheckOvertime(startTime, overtime);
+            rt_kprintf("checkovertime ret = %d\n",ret);
+            if (0 != ret)
+            {
+                /* TODO:清空超时的节点的数据 */
+                usSRegHoldBuf[TEMPERATURE_FIRST_ADDRESS + i] = 0;  //温度数据清0;
+                usSRegHoldBuf[VOLTAGE_FIRST_ADDRESS + i] = 0;      //电压数据清0;  
+                usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 2 + 3 * i] = 0; //灵敏度和信号强度清0;
+                usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * i] = 0;
+                usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * i] = 0;  //发射次数清0
+                usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 2 * i] = 0;
+                usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 1 + 2 * i] = 0;  //接收时刻清0           
+            }
+         }
+         rt_thread_mdelay(50);
+    }
+
 }
 
 
@@ -187,8 +198,8 @@ int TaskDataReceiveInit(void)
                    THREAD_TASK_DATA_RECEIVE_PRIO,
                    5);
     rt_thread_startup(&ThreadTaskDataReceive);
-				   
-	/* 创建检测无线接收数据是否超时的静态任务 */
+         
+    /* 创建检测无线接收数据是否超时的静态任务 */
     rt_thread_init(&ThreadTaskCheckOverTime,
                    "TaskCheckOverTime",
                    TaskCheckOverTimeThreadEntry,

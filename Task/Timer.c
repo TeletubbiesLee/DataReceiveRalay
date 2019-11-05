@@ -14,7 +14,7 @@
 #include "Timer.h"
 
 
-static uint32_t NodeOvertimeTimerNumber = 0;		//节点超时定时器计数
+static uint32_t NodeOvertimeTimerNumber = 0;        //节点超时定时器计数
 static void NodeOvertimeTiming(void* parameter);
 
 
@@ -27,18 +27,18 @@ static void NodeOvertimeTiming(void* parameter);
   */
 void TimerInit(void)
 {
-	rt_timer_t checkOvertime;		//用作发射器接收超时的计时
-	
-	checkOvertime = rt_timer_create("NodeOvertimeTiming",
-									NodeOvertimeTiming,
-									RT_NULL,
-									RT_TICK_PER_SECOND,			//定时一秒
-									RT_TIMER_FLAG_PERIODIC);
-	if(RT_NULL != checkOvertime)
-	{
-		rt_timer_start(checkOvertime);
-	}
-	
+    rt_timer_t checkOvertime;        //用作发射器接收超时的计时
+    
+    checkOvertime = rt_timer_create("NodeOvertimeTiming",
+                                    NodeOvertimeTiming,
+                                    RT_NULL,
+                                    RT_TICK_PER_SECOND,            //定时一秒
+                                    RT_TIMER_FLAG_PERIODIC);
+    if(RT_NULL != checkOvertime)
+    {
+        rt_timer_start(checkOvertime);
+    }
+    
 }
 
 
@@ -50,7 +50,7 @@ void TimerInit(void)
   */
 static void NodeOvertimeTiming(void* parameter)
 {
-	NodeOvertimeTimerNumber++;
+    NodeOvertimeTimerNumber++;
 }
 
 
@@ -62,7 +62,7 @@ static void NodeOvertimeTiming(void* parameter)
   */
 uint32_t GetNodeOvertime(void)
 {
-	return NodeOvertimeTimerNumber;
+    return NodeOvertimeTimerNumber;
 }
 
 
@@ -75,9 +75,17 @@ uint32_t GetNodeOvertime(void)
   */
 uint8_t CheckOvertime(uint32_t startTime, uint32_t overtime)
 {
-	/* TODO:判断是否超时 */
-	
-	return 0;
+    /* TODO:判断是否超时 */
+    uint32_t nowTime  = GetNodeOvertime( );
+    if ( (nowTime - startTime) >= overtime)
+    {
+        return 1;    
+    }
+    else 
+    {
+        return 0;
+    }
+    
 }
 
 

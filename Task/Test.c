@@ -39,7 +39,7 @@ static void ModbusSlaveDataThreadEntry(void* parameter)
 	
     while (1)
     {
-        /* 将所有存放地址的空间清零*/
+
         usSRegHoldBuf[0x708] = 0x5AA5;
         usSRegHoldBuf[0x709] = 0xABBA;
         usSRegHoldBuf[0x710] = 0x5AA5;

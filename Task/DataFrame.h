@@ -21,7 +21,7 @@
 #define NODE_STATUS_FIRST_ADDRESS		0x408		//发射器节点状态存储首地址
 #define NODE_DEVICE_ID_FIRST_ADDRESS	0x708		//发射器节点设备ID号存储首地址
 #define MEASUREMENT_TYPE_FIRAT_ADDRESS	0x908		//发射器测量类型存储首地址
-
+#define RECEIVING_MOMENT_FIRAT_ADDRESS	0xA08		//发射器接收时刻存储首地址
 
 
 /* 保存传感器节点数据，以及对数据操作的结构体 */
