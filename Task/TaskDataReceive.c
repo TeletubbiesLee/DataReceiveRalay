@@ -14,6 +14,8 @@
 #include "CC1101.h"
 #include "TaskDataReceive.h"
 #include "DataFrame.h"
+#include "Timer.h"
+#include "ConfigFile.h"
 
 //测试打印输出需要
 #include "TaskConfig.h"
@@ -26,6 +28,12 @@
 static rt_uint8_t TaskDataReceiveStack[1024];
 static struct rt_thread ThreadTaskDataReceive;
 static void TaskDataReceiveThreadEntry(void* parameter);
+
+/* 检测无线数据接收是否超时的任务优先级，栈空间，任务结构体及入口函数 */
+#define THREAD_TASK_CHECK_OVER_TIME_PRIO    11
+static rt_uint8_t TaskCheckOverTimeStack[1024];
+static struct rt_thread ThreadTaskCheckOverTime;
+static void TaskCheckOverTimeThreadEntry(void* parameter);
 
 
 /*************************************function********************************************/
@@ -82,11 +90,12 @@ static void TaskDataReceiveThreadEntry(void* parameter)
                 {
 					DebugPrintf("设备在数据表中的编号：%d\r\n", nodeData.deviceNumber);
 					
-					/* 保存温度值和电压值、信号强度 */
+					/* 保存温度值和电压值、信号强度、接收时刻 */
                     nodeData.saveTemperature(nodeData);
                     nodeData.saveVoltage(nodeData);
 					nodeData.saveSignalStrength(nodeData);
                     nodeData.saveLaunchNumber(nodeData);
+					nodeData.saveReceiveTime(nodeData);
                 }
 				else
 				{
@@ -127,6 +136,40 @@ static void TaskDataReceiveThreadEntry(void* parameter)
 
 
 /**
+  * @brief : 检测无线数据接收是否超时
+  * @param : void
+  * @return: void 
+  * @updata: [2019-11-05][Lei][creat]
+  */
+static void TaskCheckOverTimeThreadEntry(void* parameter)
+{
+	uint32_t startTime = 0;			//存放某一节点上次接收时刻
+	uint32_t overtime = g_ConfigFile[2].parameter * 60;			//设置的超时时间
+	uint8_t ret = 0;
+	
+	TimerInit();		//初始化检测节点超时的定时器
+	
+	/* 轮流判断256个节点是否超时，如果超时，就清空相关数据 */
+	for(uint16_t i = 0; i < 256; i++)
+	{
+		/* TODO:从usSRegHoldBuf中获取第i个的接收时刻 */
+		
+		if(0 == startTime)		//如果上一次接收时刻为0，直接跳过这一节点判断
+		{
+			continue;
+		}
+		
+		ret = CheckOvertime(startTime, overtime);
+		if(0 != ret)
+		{
+			/* TODO:清空超时的节点的数据 */
+			
+		}
+	}
+}
+
+
+/**
   * @brief : 创建CC1101无线数据接收任务
   * @param : void
   * @return: void 
@@ -144,6 +187,17 @@ int TaskDataReceiveInit(void)
                    THREAD_TASK_DATA_RECEIVE_PRIO,
                    5);
     rt_thread_startup(&ThreadTaskDataReceive);
+				   
+	/* 创建检测无线接收数据是否超时的静态任务 */
+    rt_thread_init(&ThreadTaskCheckOverTime,
+                   "TaskCheckOverTime",
+                   TaskCheckOverTimeThreadEntry,
+                   RT_NULL,
+                   TaskCheckOverTimeStack,
+                   sizeof(TaskCheckOverTimeStack),
+                   THREAD_TASK_CHECK_OVER_TIME_PRIO,
+                   5);
+    rt_thread_startup(&ThreadTaskCheckOverTime);
 
     return 0;
 }

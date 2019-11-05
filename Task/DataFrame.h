@@ -38,6 +38,7 @@ typedef struct NodeData{
     void (*saveVoltage)(struct NodeData nodeData);                //保存电压值
 	void (*saveSignalStrength)(struct NodeData nodeData);		//保存信号强度
 	void (*saveLaunchNumber)(struct NodeData nodeData);			//保存发射次数
+	void (*saveReceiveTime)(struct NodeData nodeData);			//保存接收时间
 
 }NodeDataStruct;
 

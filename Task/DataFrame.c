@@ -26,6 +26,7 @@ static float CalculateTemperature(uint8_t* data);
 static void CalculateSignalStrength(struct NodeData* nodeData);
 static void SaveSignalStrength(struct NodeData nodeData);
 static void SaveLaunchNumber(struct NodeData nodeData);
+static void SaveReceiveTime(struct NodeData nodeData);
 
 
 /********************************extern*************************************/
@@ -47,6 +48,7 @@ void NodeDataStructInit(NodeDataStruct* nodeData)
     nodeData->saveVoltage = SaveVoltage;
     nodeData->saveSignalStrength = SaveSignalStrength;
     nodeData->saveLaunchNumber = SaveLaunchNumber;
+	nodeData->saveReceiveTime = SaveReceiveTime;
 }
 
 
@@ -323,8 +325,20 @@ static void SaveLaunchNumber(struct NodeData nodeData)
     {   
         ++launchNumber;          
         usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] = launchNumber & 0x0000FFFF;
-        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (launchNumber & 0xFFFF0000) >> 16;
-             
+        usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (launchNumber & 0xFFFF0000) >> 16;    
     }
+}
 
- }
+
+/**
+  * @brief : 保存发射器接收时刻时间
+  * @param : nodeData 数据结构体
+  * @return: void
+  * @updata: [2019-11-05][Lei][creat]
+  */
+static void SaveReceiveTime(struct NodeData nodeData)
+{
+	/* TODO:根据GetNodeOvertime函数，把时间保存到usSRegHoldBuf中 */
+	
+}
+ 

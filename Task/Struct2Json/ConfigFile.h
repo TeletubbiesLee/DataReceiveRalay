@@ -36,6 +36,7 @@ enum ConfigFileEnum
 {
     ConfigFileEnum_ModbusBandrate = 0,		//(00)Modbus波特率
     ConfigFileEnum_ModbusSlaveAddress,		//(01)Modbus从机地址
+	ConfigFileEnum_NodeOvertimeTime,		//(02)传感器节点超时时间
 
     ConfigFileEnum_Over = 0xFF
 };

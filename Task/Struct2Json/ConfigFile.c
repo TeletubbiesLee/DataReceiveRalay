@@ -24,6 +24,10 @@ ConfigFile g_ConfigFile[] = \
         .name = "Modbus_SlaveAddress",			//Modbus从机地址
         .parameter = 1,
         .number = ConfigFileEnum_ModbusSlaveAddress, },
+	{ 
+        .name = "NodeOvertimeTime",			//节点超时时间
+        .parameter = 30,
+        .number = ConfigFileEnum_NodeOvertimeTime, },
 	
 };
 /*************************************************END*************************************************/

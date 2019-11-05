@@ -18,6 +18,7 @@
 #include "DataFrame.h"
 #include <stdio.h>
 #include "string.h"
+
 //测试打印需要
 #include "TaskConfig.h"
 /*************************************extern********************************************/
@@ -30,8 +31,8 @@ static FIL FileStructure;               //DeviceId.csv该文件的文件结构�
   * @param : void
   * @return: void 
   * @updata: [2019-10-23][Lei][creat]
-             [2019-10-23][Gang][update][补充函数内容]
-             [2019-10-28][Lei][函数对参数之间操作，不再分成单个函数]
+  *          [2019-10-23][Gang][update][补充函数内容]
+  *          [2019-10-28][Lei][函数对参数之间操作，不再分成单个函数]
   */
 void HostSetModbusParameter(void)
 {
@@ -60,36 +61,37 @@ void HostSetModbusParameter(void)
 
 
 /**
-  * @brief : 根据json文件或者默认设置Modbus保持寄存器0000H
+  * @brief : 根据json文件或者默认设置Modbus保持寄存器
   * @param : void
   * @return: void 
   * @updata: [2019-11-04][Gang][creat]
+  *          [2019-11-05][Lei][修改位操作方式，添加配置发射器超时时间]
   */
-void SaveModbusParameter(void)
+void ConfigModbusHoldRegister(void)
 {   
-    usSRegHoldBuf[0] = g_ConfigFile[1].parameter;
-    if (2400 == g_ConfigFile[0].parameter )
+    usSRegHoldBuf[0] = g_ConfigFile[1].parameter;		//配置Modbus通讯地址
+	
+	/* 配置Modbus波特率 */
+    if (2400 == g_ConfigFile[0].parameter)
     {
-        usSRegHoldBuf[0] &= ~(1 << 8);
-        usSRegHoldBuf[0] &= ~(1 << 9);
+        usSRegHoldBuf[0] |= (0 << 9 | 0 << 8);
     }
     else if(4800 == g_ConfigFile[0].parameter)
     {
-        usSRegHoldBuf[0] |= (1 << 8);
-        usSRegHoldBuf[0] &= ~(1 << 9);
+        usSRegHoldBuf[0] |= (0 << 9 | 1 << 8);
     }
     else if(9600 == g_ConfigFile[0].parameter)
     {
-        usSRegHoldBuf[0] &= ~(1 << 8);
-        usSRegHoldBuf[0] |= (1 << 9);
+        usSRegHoldBuf[0] |= (1 << 9 | 0 << 8);
     }
     else if(115200 == g_ConfigFile[0].parameter)
     {
-        usSRegHoldBuf[0] |= (1 << 8);
-        usSRegHoldBuf[0] |= (1 << 9);
+        usSRegHoldBuf[0] |= (1 << 9 | 1 << 8);
     }
-    usSRegHoldBuf[0] |= (1 << 10);
-    usSRegHoldBuf[0] |= (1 << 11);
+	
+    usSRegHoldBuf[0] |= (1 << 11 | 1 << 10);			//配置串口格式
+	
+	usSRegHoldBuf[1] = g_ConfigFile[2].parameter;		//配置发射器超时时间
 }
 
 /**

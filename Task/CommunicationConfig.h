@@ -16,7 +16,7 @@
 
 
 void HostSetModbusParameter(void);
-void SaveModbusParameter(void);
+void ConfigModbusHoldRegister(void);
 uint8_t ReadDeviceIdFile(void);
 uint8_t SaveDeviceIdFile(void);
 uint32_t StrToInt(uint8_t *str);

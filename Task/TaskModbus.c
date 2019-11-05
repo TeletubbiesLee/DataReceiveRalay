@@ -21,6 +21,7 @@
 #include <stdbool.h>
 #include "DataFrame.h"
 
+
 /*************************************static********************************************/
 /* Modbus从机轮训的任务优先级，栈空间，任务结构体及入口函数 */
 #define THREAD_MODBUS_SLAVE_POLL_PRIO	22
@@ -97,15 +98,13 @@ static void SaveConfigThreadEntry(void* parameter)
     ret = Get_JsonFile();		//!< 获取json文件,存在json文件则使用文件中配置参数,不存在则使用默认参数
     if (0 != ret)
     {
-        rt_kprintf("0x%X\n",g_ConfigFile[1].parameter);
-        rt_kprintf("0x%X\n",g_ConfigFile[0].parameter);
-        SaveModbusParameter();
+        ConfigModbusHoldRegister();			//根据g_ConfigFile变量，设置Modbus保持寄存器
         rt_kprintf("Get ConfigFile.json Fail.\r\n");
         rt_kprintf("Use default Configuration.\r\n");
     }
 	else
 	{
-        SaveModbusParameter();
+        ConfigModbusHoldRegister();
         rt_kprintf("Get ConfigFile.json Success.\r\n");
 	}
 	

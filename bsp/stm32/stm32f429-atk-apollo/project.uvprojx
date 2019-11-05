@@ -1114,6 +1114,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\Task\Struct2Json\JsonFileOperation.c</FilePath>
             </File>
+            <File>
+              <FileName>Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\Task\Timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
