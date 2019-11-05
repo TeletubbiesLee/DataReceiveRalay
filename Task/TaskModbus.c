@@ -128,6 +128,14 @@ static void SaveConfigThreadEntry(void* parameter)
 			isConfigUpdata = true;
         }
 		
+		/* 判断是否有超时时间下发，有则保存文件 */
+		if (usSRegHoldBuf[CONFIG_FLAG_ADDRESS] & (1 << 1))
+		{
+			g_ConfigFile[2].parameter = usSRegHoldBuf[1] & 0x00FF;	//设置超时时间
+			usSRegHoldBuf[CONFIG_FLAG_ADDRESS] &= ~(1 << 1);
+			isConfigUpdata = true;
+		}
+		
 		/* TODO：判断是否有其他参数下发 */
 		
 		
