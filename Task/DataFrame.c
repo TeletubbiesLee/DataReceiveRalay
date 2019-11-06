@@ -321,10 +321,13 @@ static void SaveSignalStrength(struct NodeData nodeData)
   */
 static void SaveLaunchNumber(struct NodeData nodeData)
 {
-    static uint32_t launchNumber = 0 ;
+    uint32_t launchNumber = 0;
     if (true == nodeData.isDataValid)
     {   
-        ++launchNumber;          
+        
+        launchNumber = (usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] \
+        + (usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] << 16));
+        launchNumber++;          
         usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] = launchNumber & 0x0000FFFF;
         usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (launchNumber & 0xFFFF0000) >> 16;    
     }
@@ -341,7 +344,7 @@ static void SaveLaunchNumber(struct NodeData nodeData)
 static void SaveReceiveTime(struct NodeData nodeData)
 {
     /*根据GetNodeOvertime函数，把时间保存到usSRegHoldBuf中 */
-    static uint32_t receiveTime = 0 ;
+    uint32_t receiveTime = 0;
     if (true == nodeData.isDataValid)
     {             
         receiveTime = GetNodeOvertime();

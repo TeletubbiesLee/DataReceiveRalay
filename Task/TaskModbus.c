@@ -69,13 +69,13 @@ MODBUS_BOOT:
     {
         eMBPoll();         //FreeModbus从机不断查询
         
-        if (true == isModbusRebootFlag)
-        {
-            eMBDisable();
-            eMBClose();
-            isModbusRebootFlag = false;
-            goto MODBUS_BOOT;        //参数设置完毕之后进行重启
-        }
+//        if (true == isModbusRebootFlag)
+//        {
+//            eMBDisable();
+//            eMBClose();
+//            isModbusRebootFlag = false;
+//            goto MODBUS_BOOT;        //参数设置完毕之后进行重启
+//        }
         //rt_thread_mdelay(1);
     }
 
