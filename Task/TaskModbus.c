@@ -20,6 +20,7 @@
 #include "ConfigFile.h"
 #include <stdbool.h>
 #include "DataFrame.h"
+#include "stm32f429xx.h" 
 
 
 /*************************************static********************************************/
@@ -35,7 +36,7 @@ static rt_uint8_t SaveConfigThreadStack[4096];
 static struct rt_thread SaveConfigThreadHandle;
 static void SaveConfigThreadEntry(void* parameter);
 
-static bool isModbusRebootFlag = false;              //Modbus修改参数后的重启标志位
+static void SystemReset(void);
 
 /*************************************extern********************************************/
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //保持寄存器缓冲区
@@ -56,27 +57,18 @@ static void ModbusSlavePollThreadEntry(void* parameter)
     uint8_t slaveAddress = 0;     //从机地址
     uint8_t uartNumber = 4;       //串口号
 
-MODBUS_BOOT:
     bandrate = g_ConfigFile[0].parameter;
     slaveAddress = g_ConfigFile[1].parameter;
     
     /* 初始化Modbus-RTU模式，从机地址为1，串口使用USART1，波特率115200，无校验 */
-    eMBInit(MB_RTU, slaveAddress, uartNumber, bandrate,  MB_PAR_NONE);
+    eMBInit(MB_RTU, slaveAddress, uartNumber, bandrate, MB_PAR_NONE);
     
     eMBEnable();            //启动FreeModbus
     
     while(1)
     {
         eMBPoll();         //FreeModbus从机不断查询
-        
-//        if (true == isModbusRebootFlag)
-//        {
-//            eMBDisable();
-//            eMBClose();
-//            isModbusRebootFlag = false;
-//            goto MODBUS_BOOT;        //参数设置完毕之后进行重启
-//        }
-        //rt_thread_mdelay(1);
+        rt_thread_mdelay(1);
     }
 
 }
@@ -150,7 +142,13 @@ static void SaveConfigThreadEntry(void* parameter)
         {
             Create_JsonFile();            //有配置更新，则将新的配置保存到json文件中
             isConfigUpdata = false;
-            isModbusRebootFlag = true;
+        }
+		
+		/* 判断是否重启 */
+		if (usSRegHoldBuf[CONFIG_FLAG_ADDRESS] & (1 << 15))
+        {
+            usSRegHoldBuf[CONFIG_FLAG_ADDRESS] &= ~(1 << 15);
+			SystemReset();
         }
         
         rt_thread_mdelay(1000);       
@@ -194,5 +192,19 @@ int  TaskModbusInit(void)
 
     return 0;              
 }
+
+
+/**
+  * @brief : 系统复位
+  * @param : void
+  * @return: void
+  * @update: [2019-11-06][Lei][creat]
+  */
+static void SystemReset(void)
+{
+    __set_FAULTMASK(1);
+    NVIC_SystemReset();
+}
+
 
 

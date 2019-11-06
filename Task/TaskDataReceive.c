@@ -152,19 +152,18 @@ static void TaskCheckOverTimeThreadEntry(void* parameter)
     {   /* 轮流判断256个节点是否超时，如果超时，就清空相关数据 */
         for (uint16_t i = 0; i < 256; i++)
         {
-            /* TODO:从usSRegHoldBuf中获取第i个的接收时刻 */
-            startTime = usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 2 * i]\
-            + (usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 1 + 2 * i] << 16);
+            /* 从usSRegHoldBuf中获取第i个的接收时刻 */
+            startTime = usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 2 * i] \
+						+ (usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 1 + 2 * i] << 16);
             if (0 == startTime)		//如果上一次接收时刻为0，直接跳过这一节点判断
             {
                 continue;
             }
             
             ret = CheckOvertime(startTime, overtime);
-            rt_kprintf("checkovertime ret = %d\n",ret);
             if (0 != ret)
             {
-                /* TODO:清空超时的节点的数据 */
+                /* 清空超时的节点的数据 */
                 usSRegHoldBuf[TEMPERATURE_FIRST_ADDRESS + i] = 0;  //温度数据清0;
                 usSRegHoldBuf[VOLTAGE_FIRST_ADDRESS + i] = 0;      //电压数据清0;  
                 usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 2 + 3 * i] = 0; //灵敏度和信号强度清0;
@@ -198,7 +197,7 @@ int TaskDataReceiveInit(void)
                    THREAD_TASK_DATA_RECEIVE_PRIO,
                    5);
     rt_thread_startup(&ThreadTaskDataReceive);
-         
+
     /* 创建检测无线接收数据是否超时的静态任务 */
     rt_thread_init(&ThreadTaskCheckOverTime,
                    "TaskCheckOverTime",

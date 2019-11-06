@@ -94,13 +94,13 @@ void ConfigModbusHoldRegister(void)
     usSRegHoldBuf[1] = g_ConfigFile[2].parameter;       //配置发射器超时时间
 }
 
+
 /**
   * @brief : 将上位机唯一编码保存到csv文件中
   * @param : fileName 
   * @return: 返回值 
   * @updata: [2019-10-31][Gang][creat]
   */
-
 uint8_t SaveDeviceIdFile(void)
 {
     uint8_t str[1024] = {0};       //存放需要保存到文件中的字符
