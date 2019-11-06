@@ -23,8 +23,12 @@
 #include "TaskConfig.h"
 /*************************************extern********************************************/
 extern USHORT usSRegHoldBuf[S_REG_HOLDING_NREGS];    //保持寄存器缓冲区
+
+
 /*************************************static********************************************/
 static FIL FileStructure;               //DeviceId.csv该文件的文件结构体
+
+
 /********************************function**************************************/
 /**
   * @brief : 设置Modbus通信参数
@@ -208,7 +212,7 @@ void IntToStr(uint8_t *p_str, uint32_t intnum)
 
     for (i = 0; i < 10; i++)
     {
-        p_str[pos++] = (intnum / divider) + 48;   //'0'的ASCII码为48
+        p_str[pos++] = (intnum / divider) + '0';   //'0'的ASCII码为48
 
         intnum = intnum % divider;
         divider /= 10;

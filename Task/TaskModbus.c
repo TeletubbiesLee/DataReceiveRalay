@@ -90,16 +90,16 @@ static void SaveConfigThreadEntry(void* parameter)
     ret = Get_JsonFile();        //!< 获取json文件,存在json文件则使用文件中配置参数,不存在则使用默认参数
     if (0 != ret)
     {
-        ConfigModbusHoldRegister();            //根据g_ConfigFile变量，设置Modbus保持寄存器
         rt_kprintf("Get ConfigFile.json Fail.\r\n");
         rt_kprintf("Use default Configuration.\r\n");
     }
     else
     {
-        ConfigModbusHoldRegister();
+        
         rt_kprintf("Get ConfigFile.json Success.\r\n");
     }
-    
+    ConfigModbusHoldRegister();			//根据最新的g_ConfigFile变量设置保持寄存器的值
+	
     ret = ReadDeviceIdFile();                //读取CSV文件中的设备编码ID号
     if (0 != ret)
     {

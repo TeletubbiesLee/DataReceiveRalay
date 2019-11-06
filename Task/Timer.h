@@ -13,8 +13,8 @@
 
 #include <stdint.h>
 
-void TimerInit(void);
-uint32_t GetNodeOvertime(void);
-uint8_t CheckOvertime(uint32_t startTime, uint32_t overtime);
+void TimerInit(void);						//定时器初始化，并开启定时器
+uint32_t GetNodeOvertime(void);				//获取当前的相对时间节点
+uint8_t CheckOvertime(uint32_t startTime, uint32_t overtime);		//检测是否超时
 
 #endif

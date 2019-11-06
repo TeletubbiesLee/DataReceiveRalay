@@ -88,6 +88,8 @@
 #define DFS_FILESYSTEM_TYPES_MAX                                       4
 #define DFS_FD_MAX                                                     4
 
+#define RT_SPI_FLASH_NAME "W25Q256FV"
+
 /* elm-chan's FatFs, Generic FAT Filesystem Module */
 #define RT_DFS_ELM_WORD_ACCESS
 #define RT_DFS_ELM_USE_LFN_0

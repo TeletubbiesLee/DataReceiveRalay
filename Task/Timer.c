@@ -43,7 +43,7 @@ void TimerInit(void)
 
 
 /**
-  * @brief : 检测节点超时定时器
+  * @brief : 定时器中断服务函数，中断一次加一秒
   * @param : void
   * @return: void 
   * @updata: [2019-11-05][Lei][creat]
@@ -57,7 +57,7 @@ static void NodeOvertimeTiming(void* parameter)
 /**
   * @brief : 获取节点定时器时间
   * @param : void
-  * @return: void 
+  * @return: 返回当前相对时间点 
   * @updata: [2019-11-05][Lei][creat]
   */
 uint32_t GetNodeOvertime(void)
@@ -75,9 +75,8 @@ uint32_t GetNodeOvertime(void)
   */
 uint8_t CheckOvertime(uint32_t startTime, uint32_t overtime)
 {
-    /* TODO:判断是否超时 */
-    uint32_t nowTime  = GetNodeOvertime( );
-    if ( (nowTime - startTime) >= overtime)
+    uint32_t nowTime  = GetNodeOvertime();
+    if ((nowTime - startTime) >= overtime)
     {
         return 1;    
     }

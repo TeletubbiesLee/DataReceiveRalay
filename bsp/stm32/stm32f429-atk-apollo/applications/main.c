@@ -14,13 +14,11 @@
 #include <dfs_fs.h>
 
 #include "TaskModbus.h"
-#include "Test.h"
 #include "TaskDataReceive.h"
 
 
 /* defined the LED0 pin: PB0 */
 #define LED0_PIN    GET_PIN(B, 0)
-#define RT_SPI_FLASH_NAME "W25Q256FV"
 
 
 void FileOperateInit(void);
@@ -38,16 +36,11 @@ int main(void)
     /* set LED0 pin mode to output */
     rt_pin_mode(LED0_PIN, PIN_MODE_OUTPUT);
 	
-	rt_thread_mdelay(1000);
-	
 	FileOperateInit();			//挂载文件系统
-   // FileOperateFormat();
 	
     TaskModbusInit();			//创建Modbus相关任务
-    TaskTestInit();             //测试任务
 	TaskDataReceiveInit();		//创建CC1101无线数据接收任务
 
-	
     while (1)
     {
         rt_pin_write(LED0_PIN, PIN_HIGH);
@@ -78,6 +71,7 @@ void FileOperateFormat(void)
 		rt_kprintf("spi flash mk to /spi failed!, code:%d\n", code);
     }
 }
+FINSH_FUNCTION_EXPORT_ALIAS(FileOperateFormat, fs_format, FileSystem Format)
 
 
 /**

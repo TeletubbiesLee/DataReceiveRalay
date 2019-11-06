@@ -21,6 +21,8 @@ uint8_t ReadDeviceIdFile(void);
 uint8_t SaveDeviceIdFile(void);
 uint32_t StrToInt(uint8_t *str);
 void IntToStr(uint8_t *p_str, uint32_t intnum);
+
+
 #endif
 
 

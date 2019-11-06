@@ -309,7 +309,6 @@ static void SaveSignalStrength(struct NodeData nodeData)
         usSRegHoldBuf[NODE_STATUS_FIRST_ADDRESS + 2 + 3 * nodeData.deviceNumber] = (nodeData.RSSI_Value << 8) + nodeData.LQI_Value;  
     }
     
-    
 }
 
 
@@ -317,17 +316,19 @@ static void SaveSignalStrength(struct NodeData nodeData)
   * @brief : 保存发射器发射次数
   * @param : nodeData 数据结构体
   * @return: void
-  * @updata: [2019-10-24][Lei][creat]
+  * @updata: [2019-11-05][Lei][creat]
+             [2019-11-05][Gang][update][补充函数内容]
   */
 static void SaveLaunchNumber(struct NodeData nodeData)
 {
     uint32_t launchNumber = 0;
+	
     if (true == nodeData.isDataValid)
-    {   
-        
+    {
         launchNumber = (usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] \
-        + (usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] << 16));
-        launchNumber++;          
+					   + (usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] << 16));
+        launchNumber++;
+		
         usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] = launchNumber & 0x0000FFFF;
         usSRegHoldBuf[LAUNCH_NUMBER_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (launchNumber & 0xFFFF0000) >> 16;    
     }
@@ -343,14 +344,18 @@ static void SaveLaunchNumber(struct NodeData nodeData)
   */
 static void SaveReceiveTime(struct NodeData nodeData)
 {
-    /*根据GetNodeOvertime函数，把时间保存到usSRegHoldBuf中 */
     uint32_t receiveTime = 0;
+	
     if (true == nodeData.isDataValid)
     {             
         receiveTime = GetNodeOvertime();
+		
         usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 2 * nodeData.deviceNumber] = receiveTime & 0x0000FFFF;
         usSRegHoldBuf[RECEIVING_MOMENT_FIRAT_ADDRESS + 1 + 2 * nodeData.deviceNumber] = (receiveTime & 0xFFFF0000) >> 16;    
     }
     
 }
+
+
+
  
